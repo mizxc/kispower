@@ -1,0 +1,67 @@
+{% extends 'theme/default/_base.html' %}
+
+{% block title %}知识分享-{{custom['webName']}}{% endblock %}
+
+{% block customCss %}
+<style>
+    .bradcam_area {
+        background-image: url('{{current_user.getRandomImage()}}');
+    }
+    .kshare-item:hover{
+        background-color: #ecebed;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="bradcam_area">
+    <h3>
+        知识分享
+    </h3>
+</div>
+<div class="whole-wrap">
+    <div class="container box_1170">
+        <div class="section-top-border">
+            <h2 class="mb-30">我的知识分享</h2>
+            <div class="row">
+                {%for k in ks%}
+                    <div class="col-md-4 d-flex align-self-stretch ftco-animate fadeInUp ftco-animated mb-5">
+                        <div class="media block-6 services d-block shadow p-4">
+                            <a class="media-body" href="{{url_for('home.kispowerKShareShow',id=k.id)}}"
+                               target="_blank">
+                                <h3 class="heading mb-3">
+                                    <span class="icon icon-title"></span>
+                                    {{k.title}}
+                                </h3>
+                                <p>{{k.introduction|truncate(60, killwords=True, leeway=0)}}</p>
+                            </a>
+                            <p>{{k.shareTime}}</p>
+                        </div>
+                    </div>
+                    {%endfor%}
+            </div>
+            <nav class="blog-pagination justify-content-center d-flex">
+                <ul class="pagination">
+                    {%if page>0%}
+                    <li class="page-item">
+                        <a href="{{url_for('home.kshare',page=page-1)}}" class="page-link"
+                           aria-label="Previous">
+                            <i class="ti-angle-left"></i> 上一页
+                        </a>
+                    </li>
+                    {%endif%}
+                    {%if ks.count()>(page+1)*12%}
+                    <li class="page-item">
+                        <a href="{{url_for('home.kshare',page=page+1)}}" class="page-link"
+                           aria-label="Previous">
+                            下一页 <i class="ti-angle-right"></i>
+                        </a>
+                    </li>
+                    {%endif%}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

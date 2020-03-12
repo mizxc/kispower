@@ -1,0 +1,50 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}相册管理-后台管理{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">修改相册信息 "{{p.title}}"</h4>
+                <p class="card-description">修改相册信息</p>
+                <form class="forms-sample" action="{{ url_for('admin.photoAlbumEdit',id=p.id) }}" method='post'>
+                    <div class="form-group">
+                        <label for="exampleInputName1"><i class="mdi mdi-multiplication text-danger"></i>相册名称</label>
+                        <input type="text" class="form-control" id="exampleInputName1" name="title" value="{{p.title}}">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleSelectGender">主页是否展示该相册</label>
+                        <select class="form-control" name="isShow">
+                            <option value="y" {%if p.isShow%}selected="selected"{%endif%}>是</option>
+                            <option value="n" {%if not p.isShow%}selected="selected"{%endif%}>否</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleTextarea1">相册介绍</label>
+                        <textarea class="form-control" id="exampleTextarea1" rows="6" name="introduction">{% if p.introduction %}{{p.introduction}}{% endif %}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-gradient-success mr-2">提交</button>
+                    <button type="button" class="btn btn-gradient-info mr-2 clickReback">返回</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+{% block customJs %}
+<script>
+    $(document).ready(function () {
+        $(".clickReback").on("click", function () {
+            history.go(-1)
+        })
+
+    });
+</script>
+{% endblock %}

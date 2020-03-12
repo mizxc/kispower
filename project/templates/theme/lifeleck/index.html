@@ -1,0 +1,176 @@
+{% extends 'theme/lifeleck/_base.html' %}
+
+{% block title %}{{custom['webName']}}{% endblock %}
+
+{% block customCss %}
+<style>
+    .carousel h1 {
+        color: #ffffff;
+        font-size: 80px;
+    }
+
+    .carousel h3 {
+        color: #ffffff;
+        font-size: 40px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+        {%for s in custom['slide']%}
+        {%if s[0]%}
+        <li data-target="#carouselExampleCaptions" data-slide-to="{{loop.index0}}" {%if
+            loop.index0==0%}class="active"{%endif%}></li>
+        {%endif%}
+        {%endfor%}
+    </ol>
+    <div class="carousel-inner">
+        {%for s in custom['slide']%}
+        {%if s[0]%}
+        <div class="carousel-item {%if loop.index0==0%} active{%endif%}">
+            <img src="{{url_for('static',filename=s[0])}}" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <a href="{{s[3]}}">
+                    <h1>{{s[1]}}</h1>
+                    <h3>{{s[2]}}</h3>
+                </a>
+            </div>
+        </div>
+        {%endif%}
+        {%endfor%}
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+<section class="all_post section_padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="row">
+                    {%for p in ps%}
+                    <div class="{%if loop.index0==0%}col-lg-12{%else%}col-lg-6 col-sm-6{%endif%}">
+                        <div class="single_post post_1 {%if loop.index0==0%}feature_post{%endif%} shadow">
+                            <div class="single_post_img">
+                                {%if not p.cover%}
+                                <img src="{{current_user.getRandomImage()}}" {%if loop.index0!=0%}height="240px"{%endif%}>
+                                {%else%}
+                                <img src="{{p.cover}}" {%if loop.index0!=0%}height="240px"{%endif%}>
+                                {%endif%}
+                            </div>
+                            <div class="single_post_text text-center">
+                                <a href="{{url_for('home.blogColumn',columnId=p.column.id)}}"><h5>
+                                    {{p.column.title}}</h5></a>
+                                <a href="{{url_for('home.blogShow',id=p.id)}}">
+                                    <h2>{{p.title}}</h2>
+                                    <p>{{p.writeTime}}</p>
+                                    {%if loop.index0==0%}
+                                    <p>{{p.lead|truncate(80, killwords=True, leeway=0)}}</p>
+                                    {%else%}
+                                    <p>{{p.lead|truncate(40, killwords=True, leeway=0)}}</p>
+                                    {%endif%}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {%endfor%}
+                </div>
+                <div class="page_pageniation">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            {%if page>0%}
+                            <li class="page-item"><a class="page-link"
+                                                     href="{{url_for('home.index',page=page-1)}}">上一页</a></li>
+                            {%endif%}
+                            {%if ps.count()>(page+1)*11%}
+                            <li class="page-item"><a class="page-link"
+                                                     href="{{url_for('home.index',page=page+1)}}">下一页</a></li>
+                            {%endif%}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="sidebar_widget">
+                    <div class="single_sidebar_wiget search_form_widget">
+                        <div class="sidebar_tittle">
+                            <h3>Blog</h3>
+                        </div>
+                        <form action="{{url_for('home.blogSearch')}}" method="post">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search Keyword" name="search">
+                                <button type="submit" class="btn_1" style="width: 100%">search</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="single_sidebar_wiget">
+                        <div class="sidebar_tittle">
+                            <h3>Categories</h3>
+                        </div>
+                        <div class="single_catagory_item category">
+                            <ul class="list-unstyled">
+
+                                {%for item in current_user.getBlogColumn()%}
+                                <li><a href="{{url_for('home.blogColumn',columnId=item.id)}}">{{item.title}}</a> <span>({{item.postCount}})</span>
+                                </li>
+                                {%endfor%}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="single_sidebar_wiget">
+                        <div class="sidebar_tittle">
+                            <h3>Tag Clouds</h3>
+                        </div>
+                        <div class="social_share_icon tags">
+                            <ul class="list-unstyled">
+                                {%for t,count in custom['tags'].items()%}
+                                <li><a href="{{url_for('home.blogTag',tag=t)}}">{{t}}({{count}})</a></li>
+                                {%endfor%}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="single_sidebar_wiget">
+                        <div class="sidebar_tittle">
+                            <h3>Hot Post</h3>
+                        </div>
+                        {%for p in current_user.getHotPost()%}
+                        <div class="single_catagory_post post_2 ">
+                            {%if p.cover%}
+                            <div class="category_post_img">
+                                <img src="{{p.cover}}" alt="">
+                            </div>
+                            {%else%}
+                            <div class="category_post_img">
+                                <img src="{{current_user.getRandomImage()}}" alt="">
+                            </div>
+                            {%endif%}
+                            <div class="post_text_1 pr_30">
+                                <a href="{{url_for('home.blogShow',id=p.id)}}">
+                                    <h3>{{p.title}}</h3>
+                                </a>
+                                <p><span>{{p.writeTime}}</span></p>
+                            </div>
+                        </div>
+                        {%endfor%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block customJs %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.carousel').carousel()
+    });
+</script>
+{% endblock %}

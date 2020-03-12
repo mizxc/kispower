@@ -1,0 +1,30 @@
+{% extends 'theme/photon/_base.html' %}
+
+{% block title %}{{custom['webName']}}{% endblock %}
+
+{% block content %}
+<div class="container-fluid" data-aos="fade" data-aos-delay="500">
+    <div class="swiper-container images-carousel">
+        <div class="swiper-wrapper">
+            {%for s in custom['slide']%}
+            {%if s[0]%}
+            <div class="swiper-slide">
+                <div class="image-wrap">
+                    <div class="image-info">
+                        <h2 class="mb-3">{{s[1]}}</h2>
+                        <a href="{{s[3]}}" class="btn btn-outline-white py-2 px-4">{{s[2]}}</a>
+                    </div>
+                    <img src="{{url_for('static',filename=s[0])}}" alt="Image">
+                </div>
+            </div>
+            {%endif%}
+            {%endfor%}
+        </div>
+
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-scrollbar"></div>
+    </div>
+</div>
+{% endblock %}

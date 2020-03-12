@@ -1,0 +1,98 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}博客管理-管理后台{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">添加博客专栏</h4>
+                <p class="card-description">请填写栏目信息</p>
+                <form class="forms-sample" action="{{ url_for('admin.blogColumnAdd') }}" method='post'>
+                    <div class="form-group">
+                        <label for="exampleInputName1"><i class="mdi mdi-multiplication text-danger"></i>专栏名称</label>
+                        <input type="text" class="form-control" id="exampleInputName1" name="title">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleTextarea1">专栏介绍</label>
+                        <textarea class="form-control" id="exampleTextarea1" rows="6" name="introduction"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-gradient-success mr-2">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">专栏列表</h4>
+                <p class="card-description"> 可排序 </p>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>专栏名称</th>
+                            <th>专栏介绍</th>
+                            <th>文章数</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for c in cs%}
+                        <tr>
+                            <td>
+                                {{c.number}}
+
+                            </td>
+                            <td>{{c.title}}</td>
+                            <td>{%if c.introduction%}{{c.introduction|truncate(30, killwords=True, leeway=0)}}{%endif%}</td>
+                            <td>{{c.postCount}}</td>
+                            <td>
+                                <button class="btn btn-gradient-danger btn-xs objDelete"
+                                        deleteUrl="{{ url_for('admin.blogColumnDelete',id=c.id) }}">删除
+                                </button>
+                                <a class="btn btn-gradient-info btn-xs"
+                                   href="{{ url_for('admin.blogColumnEdit',id=c.id) }}">修改专栏</a>
+                                <a class="btn btn-gradient-info btn-xs"
+                                   href="{{ url_for('admin.blogPostAdd',id=c.id) }}">添加文章</a>
+                                <a class="btn btn-gradient-info btn-xs"
+                                   href="{{ url_for('admin.blogColumnManage',id=c.id) }}">文章管理</a>
+                                {% if loop.index!=1%}
+                                <a class="btn btn-gradient-success btn-xs"
+                                   href="{{ url_for('admin.blogColumnNumberChange',number=c.number,direction='up') }}">上移</a>
+                                {% endif %}
+                                {% if loop.index!=cs.count()%}
+                                <a class="btn btn-gradient-info btn-xs"
+                                   href="{{ url_for('admin.blogColumnNumberChange',number=c.number,direction='down') }}">下移</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script>
+    $(document).ready(function () {
+        $(".objDelete").on('click', function () {
+            var deleteUrl = $(this).attr('deleteUrl')
+            if (confirm('确定要删除吗?') == true) {
+                $(window).attr('location', deleteUrl);
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}意见反馈-管理后台{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <iframe src="{{url}}" width="100%" height="1000" scrolling="yes" frameborder="0"></iframe>
+    </div>
+</div>
+{% endblock %}

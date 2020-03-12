@@ -1,0 +1,73 @@
+{% extends 'theme/louie/_base.html' %}
+
+{% block title %}导航-{{custom['webName']}}{% endblock %}
+
+{% block customCss %}
+<style>
+    .web-item:hover{
+        background-color: #ecebed;
+    }
+    .web-item img{
+        float: left;
+        width: 30px;
+        margin-right: 10px;
+    }
+    .web-item p{
+        font-size: 12px;
+        line-height: 15px;
+        margin-left: 40px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="ftco-section ftco-bread">
+    <div class="container">
+        <div class="row no-gutters slider-text justify-content-center align-items-center">
+            <div class="col-md-8 ftco-animate fadeInUp ftco-animated">
+                <p class="breadcrumbs"><span class="mr-2"><a href="/">Home</a></span> <span>Navigation</span></p>
+                <h1 class="bread">My Navigation</h1>
+                <p class="breadcrumbs mt-2">
+                    {%for n in ns%}
+                    <span class="mr-2"><a href="#list-item-{{loop.index}}">{{n.column}}</a></span>
+                    {%endfor%}
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="navigation_area mt-1">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12" data-spy="scroll" data-target="#list-navigation">
+                {%for n in ns%}
+                <div class="navigation-item" id="list-item-{{loop.index}}">
+                    <div class="m-3">
+                        <h4>
+                            {{n.column}}
+                        </h4>
+                        <hr>
+                        <div class="row">
+                            {%for w in n.webs%}
+                            {%set cover=w.icon%}
+                            {%if not w.icon%}{%set cover='local/images/webIconDefault.png'%}{%endif%}
+                            <div class="col-lg-2 col-md-3 col-sm-4 col-6 pb-3 pt-3 web-item">
+                                <a href="{{w.url}}" target="_blank" title="{{w.introduction}}">
+                                    <img src="{{url_for('static',filename=cover)}}" class="rounded-circle">
+                                    <h6>{{w.webName}}</h6>
+                                    {%if w.introduction%}
+                                    <p>{{w.introduction|truncate(30, killwords=True, leeway=0)}}</p>
+                                    {%endif%}
+                                </a>
+                            </div>
+                            {%endfor%}
+                        </div>
+                    </div>
+                </div>
+                {%endfor%}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,165 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}个人信息-管理后台{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block customCss %}
+<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='extension/simditor/simditor.css')}}" />
+<style>
+    .simditor .simditor-body {
+        overflow-y: scroll !important;
+        min-height: 600px !important;
+        max-height: 600px !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">修改个人信息</h4>
+                <p class="card-description">请填写个人信息</p>
+                <form class="forms-sample" action="{{ url_for('admin.setUserInfo') }}" method='post'>
+                    <div class="form-group">
+                        <label for="exampleInputName1">用户名</label>
+                        <input type="text" class="form-control" id="exampleInputName1" value="{{current_user.userName}}" name="userName">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail3">Email</label>
+                        <input type="email" class="form-control" id="exampleInputEmail3" value="{{current_user.email}}" name="email">
+                    </div>
+                    <button type="submit" class="btn btn-gradient-success mr-2">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">修改登陆密码</h4>
+                <p class="card-description"> 请先输入原密码，再输入新密码 </p>
+                <form class="forms-sample" action="{{ url_for('admin.setUserPassword') }}" method="post">
+                    <div class="form-group">
+                        <label for="exampleInputPassword4">原密码</label>
+                        <input type="password" class="form-control" id="exampleInputPassword4" placeholder="old password" name="oldPassword">
+                      </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword4">新密码</label>
+                        <input type="password" class="form-control" id="exampleInputPassword4" placeholder="new password" name="newPassword">
+                      </div>
+                    <button type="submit" class="btn btn-gradient-success mr-2">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">修改个人头像</h4>
+                <p class="card-description">
+                    <img src="{{url_for('static',filename=current_user.icon)}}" height="50px"><br>
+                    请上传小于1M的jpg/png/gif图片 </p>
+                <form class="forms-sample" action="{{ url_for('admin.setUserIcon') }}" enctype="multipart/form-data" method="post">
+                    <div class="form-group">
+                        <label>上传文件</label>
+                        <input type="file" name="img" class="file-upload-default">
+                        <div class="input-group col-xs-12">
+                            <input type="text" class="form-control file-upload-info" disabled
+                                   placeholder="Upload Image">
+                            <span class="input-group-append">
+                            <button class="file-upload-browse btn btn-gradient-light" type="button">选择文件</button>
+                          </span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-gradient-success mr-2">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">社交</h4>
+                {%if current_user.custom['weixin']%}
+                <p class="card-description">
+                    <img src="{{url_for('static',filename=current_user.custom['weixin'])}}" height="50px">
+                </p>
+                {%endif%}
+                <form class="forms-sample" action="{{ url_for('admin.setUserSocial') }}" enctype="multipart/form-data" method="post">
+                    <div class="form-group">
+                        <label>微信公众号或个人微信二维码</label>
+                        <input type="file" name="img" class="file-upload-default">
+                        <div class="input-group col-xs-12">
+                            <input type="text" class="form-control file-upload-info" disabled
+                                   placeholder="Upload Image">
+                            <span class="input-group-append">
+                            <button class="file-upload-browse btn btn-gradient-light" type="button">选择文件</button>
+                          </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>微博链接</label>
+                        <input class="form-control" value="{{current_user.custom['weibo']}}" name="weibo">
+                    </div>
+                    <button type="submit" class="btn btn-gradient-success mr-2">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">About Me（在主页AboutMe栏目展示）</h4>
+                <form class="forms-sample">
+                    <div class="form-group">
+                        <textarea class="form-control" rows="60" name="aboutMe" id="editor">{%if current_user.aboutMe%}{{current_user.aboutMe}}{%endif%}</textarea>
+                    </div>
+                    <button type="button" class="btn btn-gradient-success mr-2" id="postDataBtn">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script src="{{url_for('static',filename='extension/purpleAdmin/js/file-upload.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='extension/simditor/module.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='extension/simditor/hotkeys.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='extension/simditor/uploader.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='extension/simditor/simditor.js')}}"></script>
+<script>
+    $(document).ready(function () {
+        var editor = new Simditor({
+            textarea: $('#editor'),
+            //optional options
+            //placeholder: '这里输入文字...',
+            toolbar:  ['title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'hr', '|', 'indent', 'outdent', 'alignment'], //工具条都包含哪些内容
+            defaultImage: '/static/local/images/editorImage.jpg',//编辑器插入的默认图片，此处可以删除
+        });
+
+        $("#postDataBtn").on("click", function () {
+            var tempThis = $(this)
+            tempThis.addClass('d-none')
+            aboutMe = $("textarea[name='aboutMe']").val()
+            postUrl="{{ url_for('admin.setUserAboutMe') }}"
+            $.ajax({
+                type: "POST",
+                url: postUrl,
+                data:{'aboutMe':aboutMe},
+                success: function (ret) { //ret={'status':true,'info':'.....'}
+                    alert(ret.info)
+                    tempThis.removeClass('d-none')
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

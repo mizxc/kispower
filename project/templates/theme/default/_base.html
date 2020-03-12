@@ -1,0 +1,189 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+<head>
+    {%set custom = current_user.getCustom()%}
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="description" content="{{custom['webIntro']}}">
+    <meta name="keywords" content="{{custom['webKeywords']}}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon"
+          href="{{url_for('static',filename=custom['favicon'])}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/default/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/default/css/magnific-popup.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/default/css/font-awesome.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/default/css/themify-icons.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/default/css/flaticon.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/default/css/slicknav.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/default/css/owl.carousel.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/default/css/style.css')}}">
+    {% block customCss %}{% endblock %}
+    {%if custom['statisticalCode']%}
+    {{custom['statisticalCode']|safe}}
+    {%endif%}
+</head>
+
+<body>
+<!--[if lte IE 9]>
+<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+<![endif]-->
+<!-- header-start -->
+<header>
+    <div class="header-area ">
+        <div id="sticky-header" class="main-header-area">
+            <div class="container-fluid p-0">
+                <div class="row align-items-center no-gutters">
+                    <div class="col-xl-4 col-lg-2">
+                        <div class="logo-img">
+                            <a href="/">
+                                <img src="{{url_for('static',filename=custom['logo'])}}"
+                                     alt="{{custom['webName']}}" style="height: 30px;">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-xl-8 col-lg-6">
+                        <div class="main-menu  d-none d-lg-block">
+                            <nav>
+                                <ul id="navigation">
+                                    <li><a {%if mark=='index'%}class="active"{%endif%} href="/">首页</a></li>
+                                    <li><a {%if mark=='kshare'%}class="active"{%endif%}
+                                           href="{{url_for('home.kshare')}}">知识</a></li>
+                                    <li><a {%if mark=='navigation'%}class="active"{%endif%}
+                                           href="{{url_for('home.navigation')}}">导航</a></li>
+                                    <li><a {%if mark=='blog'%}class="active"{%endif%} href="{{url_for('home.blog')}}">博客
+                                        <i class="ti-angle-down"></i></a>
+                                        <ul class="submenu">
+                                            {%for item in current_user.getBlogColumn()%}
+                                            <li>
+                                                <a href="{{url_for('home.blogColumn',columnId=item.id)}}">{{item.title}}</a>
+                                            </li>
+                                            {%endfor%}
+                                        </ul>
+                                    </li>
+                                    <li><a {%if mark=='photo'%}class="active"{%endif%}
+                                           href="{{url_for('home.photoAlbum')}}">相册 <i class="ti-angle-down"></i></a>
+                                        <ul class="submenu">
+                                            {%for item in current_user.getPhotoAlbum()%}
+                                            <li><a href="{{url_for('home.photo',albumId=item.id)}}">{{item.title}}</a>
+                                            </li>
+                                            {%endfor%}
+                                        </ul>
+                                    </li>
+                                    <li><a {%if mark=='about'%}class="active"{%endif%} href="{{url_for('home.about')}}">About</a>
+                                    </li>
+                                    <li><a {%if mark=='contact'%}class="active"{%endif%}
+                                           href="{{url_for('home.contact')}}">Contact</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="mobile_menu d-block d-lg-none"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- header-end -->
+
+{% block content %}{% endblock %}
+
+<!-- footer -->
+<footer class="footer">
+    <div class="footer_top">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-3 col-md-6 col-lg-3">
+                    <div class="footer_widget">
+                        <h3 class="footer_title">
+                            Menu
+                        </h3>
+                        <ul>
+                            <li>
+                                <a href="/">首页</a>
+                                | <a href="{{url_for('home.kshare')}}">知识</a>
+                                | <a href="{{url_for('home.navigation')}}">导航</a>
+                                | <a href="{{url_for('home.blog')}}">博客</a>
+                            </li>
+                            <li>
+                                <a href="{{url_for('home.photoAlbum')}}">相册</a>
+                                | <a href="{{url_for('home.about')}}">about</a>
+                                | <a href="{{url_for('home.contact')}}">contact</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 col-lg-3">
+                    <div class="footer_widget">
+                        <h3 class="footer_title">
+                            Follow Me
+                        </h3>
+                        <div class="socail_links">
+                            <ul>
+                                <li>
+                                    <img src="{{url_for('static',filename=custom['weixin'])}}" height="150px">
+                                </li>
+                                <li>
+                                    <a href="{{custom['weibo']}}">
+                                        <i class="fa fa-weibo"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 col-lg-3">
+                    <div class="footer_widget">
+                        <h3 class="footer_title">
+                            Support
+                        </h3>
+                        <ul>
+                            <li><a href="https://colorlib.com" target="_blank">Template by Colorlib</a></li>
+                            <li><a href="http://kispower.cn" target="_blank">Power by Kispower</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 col-lg-3">
+                    <div class="footer_widget">
+                        <h3 class="footer_title">
+                            Contact
+                        </h3>
+                        <div class="media contact-info">
+                            <span class="contact-info__icon"><i class="ti-email"></i></span>
+                            <div class="media-body">
+                                <p class="footer_text">{{custom['email']}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="copy-right_text">
+        <div class="container">
+            <div class="footer_border"></div>
+            <div class="row">
+                <div class="col-xl-10 col-md-7 col-lg-9 text-center">
+                    <p class="copy_right">
+                        {{custom['copyright']|safe}}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- JS here -->
+<script src="{{url_for('static',filename='theme/default/js/modernizr-3.5.0.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/default/js/jquery-1.12.4.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/default/js/popper.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/default/js/bootstrap.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/default/js/jquery.slicknav.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/default/js/jquery.magnific-popup.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/default/js/owl.carousel.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/default/js/main.js')}}"></script>
+{% block customJs %}{% endblock %}
+</body>
+</html>

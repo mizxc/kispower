@@ -1,0 +1,142 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}时间管理-后台管理{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-10 mb-3">
+                        <h4 class="card-title">设置每天的日常任务</h4>
+                        <p class="card-description">设置的日常任务，会在添加日计划的时候，自动加到任务列表里，这样就不用每次都输入相同的日常任务。</p>
+                        <div class="forms-sample">
+                            <div class="form-group">
+                                <label for="exampleInputName1">
+                                    <button class="btn btn-gradient-primary btn-xs" type="button" id="addItem">添加任务
+                                    </button>
+                                </label>
+                                <div id="allAddHtml">
+                                    {% for p in current_user.custom['dailyTasks']%}
+                                    <div class="row">
+                                        <div class="col-sm-1">
+                                            <button class="btn btn-gradient-danger btn-xs mt-2 deleteItem"
+                                                    type="button">删除
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group row">
+                                                <div class="col-sm-12">
+                                                    <select class="form-control" name="planLevel">
+                                                        {% for o in levels.keys()%}
+                                                        <option value="{{o}}" {%if p[0]==o %}selected="selected"
+                                                                {%endif%}>{{levels[o]}}
+                                                        </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <div class="form-group row">
+                                                <div class="col-sm-12">
+                                                    <input class="form-control" placeholder="任务标题" name="planTitle"
+                                                           value="{{p[1]}}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {%endfor%}
+                                    <div id="addHtml">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <button class="btn btn-gradient-success mr-2" id="postDataBtn">提交</button>
+                            <button type="button" class="btn btn-gradient-info mr-2 clickReback">返回</button>
+                        </div>
+                        <div id="sourceHtml" class="d-none">
+                            <div class="row">
+                                <div class="col-sm-1">
+                                    <button class="btn btn-gradient-danger btn-xs mt-2 deleteItem" type="button">删除
+                                    </button>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group row">
+                                        <div class="col-sm-12">
+                                            <select class="form-control" name="planLevel">
+                                                {% for o in levels.keys()%}
+                                                <option value="{{o}}">{{levels[o]}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <div class="form-group row">
+                                        <div class="col-sm-12">
+                                            <input class="form-control" placeholder="任务标题" name="planTitle">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block customJs %}
+    <script>
+        $(document).ready(function () {
+            $("#postDataBtn").on("click", function () {
+                var tempThis = $(this)
+                tempThis.addClass('d-none')
+                planLevel = []
+                $("#allAddHtml select[name='planLevel']").each(function () {
+                    planLevel.push($(this).val())
+                });
+                planTitle = []
+                $("#allAddHtml input[name='planTitle']").each(function () {
+                    planTitle.push($(this).val())
+                });
+                postUrl = "{{ url_for('admin.timeManagementDailyTasksEdit') }}"
+                $.ajax({
+                    type: "POST",
+                    url: postUrl,
+                    data: {
+                        'planLevel': planLevel,
+                        'planTitle': planTitle,
+                    },
+                    success: function (ret) {
+                        if (ret.status) {
+                            window.location.href = "{{ url_for('admin.timeManagementDailyPlan') }}";
+                        } else {
+                            alert(ret.info)
+                            tempThis.removeClass('d-none')
+                        }
+                    }
+                });
+            });
+
+            var html = $("#sourceHtml").html();
+            $("#addItem").on('click', function () {
+                $("#addHtml").append(html);ss
+            });
+            $(document).on('click', '.deleteItem', function (e) {
+                //$(".deleteItem").on('click', function () {
+                $(this).parent().parent().remove();
+            });
+            $(".clickReback").on("click", function () {
+                history.go(-1)
+            })
+        });
+    </script>
+    {% endblock %}

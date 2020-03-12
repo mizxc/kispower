@@ -1,0 +1,111 @@
+{% extends 'theme/louie/_base.html' %}
+
+{% block title %}{{p.title}}-{{custom['webName']}}{% endblock %}
+
+{% block customCss %}
+<style>
+    #blog-content img {
+        width: 100%;
+        height: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="ftco-section ftco-bread">
+    <div class="container">
+        <div class="row no-gutters slider-text justify-content-center align-items-center">
+            <div class="col-md-8 ftco-animate">
+                <p class="breadcrumbs"><span class="mr-2"><a href="/">Home</a></span> <span>Blog</span></p>
+                <h1 class="bread">My Blog</h1>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="ftco-section">
+    <div class="container">
+        <div class="row d-flex">
+            <div class="col-lg-8 ftco-animate fadeInUp ftco-animated" id="blog-content">
+                <h2 class="mb-3 font-weight-bold">{{p.title}}</h2>
+                <p>
+                    <a href="{{url_for('home.blogColumn',columnId=p.column.id)}}">{{p.column.title}}</a>
+                    | {{p.writeTime}}
+                </p>
+                {%if p.video%}
+                    <div class="text-center">
+                        {{p.video|safe}}
+                    </div>
+                {%endif%}
+                {{p.content|safe}}
+                <div class="tag-widget post-tag-container mb-5 mt-5">
+                    <div class="tagcloud">
+                        {%for t in p.tags%}
+                        <a class="tag-cloud-link" href="{{url_for('home.blogTag',tag=t)}}">{{t}}</a>
+                        {%endfor%}
+                    </div>
+                </div>
+                <div>
+                    <!--PC和WAP自适应版-->
+                    <div id="SOHUCS" sid="post-{{p.id}}"></div>
+                    {%if custom['commentCode']%}
+                    {{custom['commentCode']|safe}}
+                    {%endif%}
+                </div>
+            </div>
+            <div class="col-lg-4 sidebar ftco-animate bg-light">
+                <div class="sidebar-box">
+                    <form class="search-form" action="{{url_for('home.blogSearch')}}" method="post">
+                        <div class="form-group">
+                            <span class="icon icon-search"></span>
+                            <input type="text" class="form-control" placeholder="search" name="search">
+                        </div>
+                    </form>
+                </div>
+                <div class="sidebar-box ftco-animate">
+                    <h3 class="sidebar-heading">Categories</h3>
+                    <ul class="categories">
+                        {%for item in current_user.getBlogColumn()%}
+                        <li><a href="{{url_for('home.blogColumn',columnId=item.id)}}">{{item.title}} <span>({{item.postCount}})</span></a>
+                        </li>
+                        {%endfor%}
+                    </ul>
+                </div>
+
+                <div class="sidebar-box ftco-animate">
+                    <h3 class="sidebar-heading">Popular Articles</h3>
+                    {%for p in current_user.getHotPost()%}
+                    <div class="block-21 mb-4 d-flex">
+                        {%if not p.cover%}
+                            <a class="blog-img mr-4" style="background-image: url({{current_user.getRandomImage()}});"></a>
+                        {%else%}
+                            <a class="blog-img mr-4" style="background-image: url({{p.cover}});"></a>
+                        {%endif%}
+                        <div class="text">
+                            <h3 class="heading"><a href="{{url_for('home.blogShow',id=p.id)}}">{{p.title}}</a></h3>
+                            <div class="meta">
+                                <div><a href="#"><span class="icon-calendar"></span> {{p.writeTime}}</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    {%endfor%}
+                </div>
+
+                <div class="sidebar-box ftco-animate">
+                    <h3 class="sidebar-heading">Tag Cloud</h3>
+                    <ul class="tagcloud">
+                        {%for t,count in custom['tags'].items()%}
+                        <a href="{{url_for('home.blogTag',tag=t)}}" class="tag-cloud-link">{{t}}({{count}})</a>
+                        {%endfor%}
+                    </ul>
+                </div>
+
+                <div class="sidebar-box ftco-animate">
+                    <h3 class="sidebar-heading">Paragraph</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus itaque, autem necessitatibus
+                        voluptate quod mollitia delectus aut.</p>
+                </div>
+            </div><!-- END COL -->
+        </div>
+    </div>
+</section>
+{% endblock %}

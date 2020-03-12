@@ -1,0 +1,36 @@
+{% extends 'theme/default/_base.html' %}
+
+{% block title %}相册-{{custom['webName']}}{% endblock %}
+
+{% block customCss %}
+<style>
+    .bradcam_area {
+        background-image: url('{{current_user.getRandomImage()}}');
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="bradcam_area">
+    <h3>
+        相册
+    </h3>
+</div>
+
+<div class="instragram_area">
+    {%for album in current_user.getPhotoAlbum()%}
+        {% set photo = current_user.getPhotoByAlbum(album.id)%}
+        {%if photo%}
+            <div class="single_instagram">
+                <img src="{{url_for('static',filename=photo.path)}}" alt="">
+                <div class="ovrelay">
+                    <a href="{{url_for('home.photo',albumId=album.id)}}">
+                        <i class="fa fa-circle"> {{album.title}}</i>
+                    </a>
+                </div>
+            </div>
+        {%endif%}
+    {%endfor%}
+</div>
+
+{% endblock %}

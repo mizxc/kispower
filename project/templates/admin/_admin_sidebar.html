@@ -1,0 +1,89 @@
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link border-bottom" href="/" target="_blank" title="你的主页">
+                <h2>Kispower</h2>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link border-bottom" data-toggle="collapse" href="#timeManagement" aria-expanded="false"
+               aria-controls="timeManagement">
+                <span class="menu-title">时间管理</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-timetable menu-icon"></i>
+            </a>
+            <div class="collapse" id="timeManagement">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"><a class="nav-link"
+                                            href="{{ url_for('admin.timeManagementTodayBoard')}}">今日看板</a></li>
+                    <li class="nav-item"><a class="nav-link"
+                                            href="{{ url_for('admin.timeManagementDailyPlan')}}">日计划管理</a></li>
+                    <li class="nav-item"><a class="nav-link"
+                                            href="{{ url_for('admin.timeManagementWeeklyPlan')}}">周计划管理</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.timeManagementMonthlyPlan')}}">月计划管理</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link"
+                                            href="{{ url_for('admin.timeManagementYearlyPlan')}}">年计划管理</a></li>
+
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link border-bottom" data-toggle="collapse" href="#kispower" aria-expanded="false"
+               aria-controls="kispower">
+                <span class="menu-title">知识管理</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-filter menu-icon"></i>
+            </a>
+            <div class="collapse" id="kispower">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.kispowerKClass')}}">知识根目录</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.kispowerKShare')}}">我的知识分享</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link border-bottom" href="{{ url_for('admin.navigationColumn') }}">
+                <span class="menu-title">导航管理</span>
+                <i class="mdi mdi-navigation menu-icon"></i>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link border-bottom" href="{{ url_for('admin.photoAlbum') }}">
+                <span class="menu-title">相册管理</span>
+                <i class="mdi mdi-file-image menu-icon"></i>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link border-bottom" href="{{ url_for('admin.blogColumn')}}">
+                <span class="menu-title">博客管理</span>
+                <i class="mdi mdi-blogger menu-icon"></i>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link border-bottom" data-toggle="collapse" href="#sysManagement" aria-expanded="false"
+               aria-controls="sysManagement">
+                <span class="menu-title">系统管理</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-settings menu-icon"></i>
+            </a>
+            <div class="collapse" id="sysManagement">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"><a class="nav-link text-danger" href="{{ url_for('admin.guideAndVersionAndBackup')}}">手册&版本&备份</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.userInfo') }}">个人信息设置</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.webTemplate')}}">网站风格设置</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.webSetting')}}">网站信息设置</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.slideSetting')}}">首页幻灯片设置</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.contact')}}">网友留言</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.feedbackAdd')}}">意见反馈</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link border-bottom" href="{{ url_for('auth.userLoginOut') }}">
+                <span class="menu-title">退出登陆</span>
+                <i class="mdi mdi-logout menu-icon"></i>
+            </a>
+        </li>
+    </ul>
+</nav>

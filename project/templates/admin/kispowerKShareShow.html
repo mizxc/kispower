@@ -1,0 +1,138 @@
+{% extends 'admin/_base_kispower.html' %}
+
+{% block title %}{{k.title}}{% endblock %}
+
+{% block customCss %}
+<link type="text/css" rel="stylesheet" href="{{url_for('static',filename='extension/contextMenu/jquery.contextMenu.css')}}"/>
+<link type="text/css" rel="stylesheet" href="{{url_for('static',filename='extension/font-awesome/css/font-awesome.min.css')}}"/>
+<style>
+    #kLabel{
+        position: absolute;
+        top:10px;
+        left:10px;
+        z-index:99;
+        -webkit-transform: rotate(360deg);
+        animation: rotation 8s linear infinite;
+        -moz-animation: rotation 8s linear infinite;
+        -webkit-animation: rotation 8s linear infinite;
+        -o-animation: rotation 8s linear infinite;
+    }
+    #kLabel:hover{
+        top:8px;
+    }
+    #kUser{
+        position: absolute;
+        top:60px;
+        left:10px;
+        z-index:99;
+        -webkit-transform: rotate(360deg);
+        animation: rotation 8s linear infinite;
+        -moz-animation: rotation 8s linear infinite;
+        -webkit-animation: rotation 8s linear infinite;
+        -o-animation: rotation 8s linear infinite;
+    }
+    #kUser:hover{
+        top:58px;
+    }
+    @-webkit-keyframes rotation {
+        from {
+        -webkit-transform: rotate(0deg);
+        }
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+    #shareTitle{
+        writing-mode: vertical-rl;
+        height: 90px;
+        position: absolute;
+        top:15px;
+        left: 60px;
+        font-size: 20px;
+        font-weight: bold;
+        z-index:99;
+    }
+    .modal-kshare:hover{
+        cursor:pointer;
+        padding: 10px;
+        background-color: #778aa2;
+    }
+</style>
+{%set custom=current_user.getCustom()%}
+{%if custom['statisticalCode']%}
+{{custom['statisticalCode']|safe}}
+{%endif%}
+{% endblock %}
+
+{% block content %}
+{%set custom=current_user.getCustom()%}
+<a href="http://www.kispower.cn/kshareBase" target="_blank" title="Kispower共享知识库">
+    <img class="img-sm rounded-circle mr-3" id="kLabel" src="{{url_for('static',filename='local/images/favicon.png')}}" alt="image">
+</a>
+<a href="/" target="_blank" title="{{custom['webName']}}">
+    <img class="img-sm rounded-circle mr-3" id="kUser" src="{{url_for('static',filename=custom['icon'])}}" alt="image">
+</a>
+<a class="modal-kshare" id="shareTitle"></a>
+<div id="jsmind_container" kClassId="{{id}}"></div>
+
+<div class="modal fade" id="export-node-Modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel">导出节点知识</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="forms-sample">
+                    <div class="form-group">
+                        <label for="exampleInputName1">导出的文件名：</label>
+                        <input type="text" class="form-control" id="exportNodeFileName">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-gradient-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-gradient-success" id="postExportNodeFileName">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="show-kshare-Modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel">知识分享：{{k.title}}</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5><a href="{{url_for('home.kispowerKShareShowTagTree',id=id)}}">《点击查看该知识导图的大纲版》</a></h5>
+                <p>by：<a href="/">{{custom['userName']}}_{{custom['webName']}}</a> | {{k.shareTime}}</p>
+                <p>{{k.introductionHtml|safe}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-gradient-success" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script type="text/javascript" src="{{url_for('static',filename='extension/contextMenu/jquery.contextMenu.min.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='extension/contextMenu/jquery.ui.position.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='local/js/jsMindForeground.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='local/js/contextMenuForeground.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='extension/html2canvas.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='extension/canvas2image.js')}}"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.modal-kshare').on("click", function () {
+            $("#show-kshare-Modal").modal('show');
+        });
+    });
+</script>
+{% endblock %}

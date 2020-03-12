@@ -1,0 +1,147 @@
+{% extends 'admin/_base_kispower.html' %}
+
+{% block title %}{{k.title}}-后台管理{% endblock %}
+
+{% block customCss %}
+<link type="text/css" rel="stylesheet"
+      href="{{url_for('static',filename='extension/font-awesome/css/font-awesome.min.css')}}"/>
+<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='extension/tagTree/tagTree.css')}}"/>
+<style>
+    #kLabel {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 99;
+        -webkit-transform: rotate(360deg);
+        animation: rotation 8s linear infinite;
+        -moz-animation: rotation 8s linear infinite;
+        -webkit-animation: rotation 8s linear infinite;
+        -o-animation: rotation 8s linear infinite;
+    }
+
+    #kUser {
+        position: absolute;
+        top: 60px;
+        left: 10px;
+        z-index: 99;
+        -webkit-transform: rotate(360deg);
+        animation: rotation 8s linear infinite;
+        -moz-animation: rotation 8s linear infinite;
+        -webkit-animation: rotation 8s linear infinite;
+        -o-animation: rotation 8s linear infinite;
+    }
+
+    @-webkit-keyframes rotation {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    #shareTitle {
+        writing-mode: vertical-rl;
+        height: 90px;
+        position: absolute;
+        top: 15px;
+        left: 60px;
+        font-size: 20px;
+        font-weight: bold;
+        z-index: 99;
+    }
+
+    .modal-kshare:hover {
+        cursor: pointer;
+        padding: 10px;
+        background-color: #778aa2;
+    }
+
+    #jsmind_container {
+        padding-top: 150px;
+        padding-left: 150px;
+    }
+</style>
+{%set custom=current_user.getCustom()%}
+{%if custom['statisticalCode']%}
+{{custom['statisticalCode']|safe}}
+{%endif%}
+{% endblock %}
+
+{% block content %}
+{%set custom=current_user.getCustom()%}
+<a href="http://www.kispower.cn/kshareBase" target="_blank" title="Kispower共享知识库">
+    <img class="img-sm rounded-circle mr-3" id="kLabel" src="{{url_for('static',filename='local/images/favicon.png')}}"
+         alt="image">
+</a>
+<a href="/" target="_blank" title="{{custom['webName']}}">
+    <img class="img-sm rounded-circle mr-3" id="kUser" src="{{url_for('static',filename=custom['icon'])}}" alt="image">
+</a>
+<a class="modal-kshare" id="shareTitle"></a>
+<div id="jsmind_container" kClassId="{{id}}"></div>
+<div class="modal fade" id="show-kshare-Modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel">知识分享：{{k.title}}</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5><a href="{{url_for('home.kispowerKShareShow',id=id)}}">《点击查看该知识大纲的思维导图》</a></h5>
+                <p>by：<a href="/">{{custom['userName']}}_{{custom['webName']}}</a> | {{k.shareTime}}</p>
+                <p>{{k.introductionHtml|safe}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-gradient-success" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script type="text/javascript" src="{{url_for('static',filename='extension/tagTree/tagTree.js')}}"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#div-loading").addClass('d-block')
+        $.ajax({
+            type: "GET",
+            url: '/kispowerGetKShareData/' + '{{id}}',
+            success: function (ret) {
+                if (ret.status) {
+                    $("#div-loading").removeClass('d-block')
+                    setShareTitle(ret.data['meta']['name'])
+                    initTagTree(ret.data.data.children)
+                }
+            },
+            error: function () {
+                alert('提交数据服务出错了，请联系开发人员!')
+            }
+        });
+        var setShareTitle = function (name) {
+            $("#shareTitle").text(name)
+            $("title").text(name)
+        }
+        var initTagTree = function (data) {
+            $("#jsmind_container").tagTree({
+                id: "",
+                data: data,
+                fold: false,
+                multiple: false,
+                check: function (val) {
+                    console.log('chekc:' + val);
+                    console.log($(this).tagTreeValues());
+                },
+                done: function () {
+                    console.log('tagTree is ok!');
+                }
+            });
+        }
+        $('.modal-kshare').on("click", function () {
+            $("#show-kshare-Modal").modal('show');
+        });
+    });
+</script>
+{% endblock %}

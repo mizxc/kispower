@@ -1,0 +1,81 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}知识管理-管理后台{% endblock %}
+{% block customCss %}
+<link rel="stylesheet" href="{{url_for('static',filename='extension/dataTable/dataTables.bootstrap4.min.css')}}">
+{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">知识分享列表</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>标题</th>
+                            <th>介绍</th>
+                            <th>时间</th>
+                            <th>pv</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for k in ks%}
+                        <tr>
+                            <td>
+                                {{loop.index}}
+                            </td>
+                            <td>{{k.title}}</td>
+                            <td>{%if k.introduction%}{{k.introduction|truncate(30, killwords=True, leeway=0)}}{%endif%}</td>
+                            <td>{{k.shareTime}}</td>
+                            <td>{{k.pv}}</td>
+                            <td>
+                                <button class="btn btn-gradient-danger btn-xs objDelete"
+                                        postUrl="{{ url_for('admin.kispowerKShareDelete',id=k.id) }}">删除
+                                </button>
+                                <a class="btn btn-gradient-info btn-xs" target="_blank"
+                                   href="{{ url_for('home.kispowerKShareShow',id=k.id) }}">浏览</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script src="{{url_for('static',filename='extension/dataTable/jquery.dataTables.min.js')}}"></script>
+<script src="{{url_for('static',filename='extension/dataTable/dataTables.bootstrap4.min.js')}}"></script>
+<script>
+    $(document).ready(function () {
+        $(".objDelete").on('click', function () {
+            var postUrl = $(this).attr('postUrl')
+            var temp = $(this)
+            if (confirm('确定要删除吗?') == true) {
+                $.ajax({
+                    type: "POST",
+                    url: postUrl,
+                    success: function (ret) { //ret={'status':true,'info':'.....'}
+                        if (ret.status){
+                            temp.parent().parent().remove()
+                        }
+                    }
+                });
+            }
+        });
+        $('.table').DataTable();
+    });
+</script>
+{% endblock %}

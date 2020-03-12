@@ -1,0 +1,86 @@
+{% extends 'theme/lifeleck/_base.html' %}
+
+{% block title %}{{a.title}}-{{custom['webName']}}{% endblock %}
+
+{% block customCss %}
+<link rel="stylesheet" href="{{url_for('static',filename='theme/default/css/magnific-popup.css')}}">
+<style>
+    #section-backgroud {
+        background-image: url({{current_user.getRandomImage()}});
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="breadcrumb align-items-center" id="section-backgroud">
+    <div class="container">
+        <div class="row align-items-center justify-content-between">
+            <div class="col-sm-8">
+                <div class="breadcrumb_tittle text-left">
+                    <h2>相册：{{a.title}}</h2>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="breadcrumb_content text-right">
+                    <p>Home<span>/</span>Category</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="whole-wrap">
+    <div class="container box_1170">
+        <div class="section-top-border">
+            <div class="row gallery-item">
+                {%for p in ps%}
+                <div class="col-md-4">
+                    <a href="{{url_for('static',filename=p.path)}}" class="img-pop-up"
+                       title="{%if p.introduction%}{{p.introduction}}{%endif%}">
+                        <div class="single-gallery-image"
+                             style="background: url({{url_for('static',filename=p.path)}});"></div>
+                    </a>
+                </div>
+                {%endfor%}
+            </div>
+            <div class="page_pageniation mt-5">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            {%if page>0%}
+                            <li class="page-item"><a class="page-link"
+                                                     href="{{url_for('home.photo',albumId=a.id,page=page-1)}}">上一页</a></li>
+                            {%endif%}
+                            {%if ps.count()>(page+1)*21%}
+                            <li class="page-item"><a class="page-link"
+                                                     href="{{url_for('home.photo',albumId=a.id,page=page+1)}}">下一页</a></li>
+                            {%endif%}
+                        </ul>
+                    </nav>
+                </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script src="{{url_for('static',filename='theme/default/js/jquery.magnific-popup.min.js')}}"></script>
+<script type="text/javascript">
+/* magnificPopup img view */
+$('.popup-image').magnificPopup({
+	type: 'image',
+	gallery: {
+	  enabled: true
+	}
+});
+
+/* magnificPopup img view */
+$('.img-pop-up').magnificPopup({
+	type: 'image',
+	gallery: {
+	  enabled: true
+	}
+});
+</script>
+{% endblock %}

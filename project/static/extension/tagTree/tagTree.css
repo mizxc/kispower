@@ -1,0 +1,100 @@
+.tagtree {
+    border: 1px solid #d7d7d7;
+    background-color: #fcfcfc;
+    padding: 10px;
+}
+.tagtree ul{
+    /*margin-left:-20px;*/
+}
+.tagtree li {
+    margin:0;
+    padding:10px 5px 0 5px;
+    position:relative;
+    list-style-type:none;
+}
+.tagtree li::before, .tagtree li::after {
+    content:'';
+    left:-20px;
+    position:absolute;
+    right:auto
+}
+.tagtree li::before {
+    border-left:1px dashed #795548;
+    bottom:50px;
+    height:100%;
+    top:-4px;
+    width:1px
+}
+.tagtree li::after {
+    border-top:1px dashed #795548;
+    height:20px;
+    top:25px;
+    width:25px
+}
+.tagtree li .span-item {
+    position: relative;
+    z-index: 1;
+    background-color: #1ABC9C;
+    /*height: 28px;*/
+    display: inline-block;
+    padding: 0 8px 0 5px;
+    font-size: 14px;
+    line-height: 28px;
+    color: white;
+}
+.span-item:before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    border-top: 14px solid transparent;
+    border-right: 10px solid #1ABC9C;
+    border-bottom: 14px solid transparent;
+    left: -10px;
+}
+/*.tagtree li span {*/
+    /*cursor:pointer*/
+/*}*/
+.span-item{
+    cursor:pointer
+}
+.tagtree>ul>li::before, .tagtree>ul>li::after {
+    border:0
+}
+.tagtree li:last-child::before {
+    height:30px
+}
+.span-item:hover
+{
+    background:#16A085;
+}
+.span-item:hover::before
+{
+    border-right: 10px solid #16A085;
+}
+.node-count {
+    display: inline-block;
+    font-size: 10px;
+    margin-left: 3px;
+    height: 16px;
+    width: 16px;
+    background-color: #8bc34a;
+    text-align: center;
+    line-height: 16px;
+    color: white;
+    border-radius: 8px;
+}
+.span-item i
+{
+    margin: 0 1 0 6;
+    color: #ECF0F1;
+    font-size: 18px;
+}
+.span-item i:hover
+{
+    color: #FFEB3B;
+}
+.span-item .i-check
+{
+    display: inline-block;
+    color: #FFEB3B !important;
+}

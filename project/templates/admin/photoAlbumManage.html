@@ -1,0 +1,102 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}相册管理-后台管理{% endblock %}
+{% block customCss %}
+<link rel="stylesheet" href="{{url_for('static',filename='extension/dataTable/dataTables.bootstrap4.min.css')}}">
+{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">"{{pa.title}}" 图像列表</h4>
+                <p><button class="btn btn-gradient-info btn-xs clickReback" type="button">返回</button></p>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>名称</th>
+                            <th>图像</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for p in ps%}
+                        <tr>
+                            <td>
+                                {{loop.index}}
+                            </td>
+                            <td {%if p.isTop%}class="text-danger"{%endif%}>{{p.title}}</td>
+                            <td>
+                                <img class="img-ss" alt="image"
+                                     src="{{url_for('static',filename=p.path)}}">
+                            </td>
+                            <td>
+                                <button class="btn btn-gradient-danger btn-xs objDelete" type="button"
+                                        deleteUrl="{{ url_for('admin.photoAlbumPhotoDelete',id=p.id) }}">
+                                    删除
+                                </button>
+                                {%if p.isTop%}
+                                <a class="btn btn-gradient-success btn-xs"
+                                        href="{{ url_for('admin.photoAlbumPhotoIsTop',albumId=pa.id,photoId=p.id,isTop='n') }}">
+                                    取消置顶
+                                </a>
+                                {%else%}
+                                <a class="btn btn-gradient-info btn-xs"
+                                        href="{{ url_for('admin.photoAlbumPhotoIsTop',albumId=pa.id,photoId=p.id,isTop='y') }}">
+                                    置顶
+                                </a>
+                                {%endif%}
+                                <button class="btn btn-gradient-info btn-xs copeImgSrc"
+                                   imgSrc="{{url_for('static',filename=p.path)}}">复制图片地址</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script src="{{url_for('static',filename='extension/purpleAdmin/js/file-upload.js')}}"></script>
+<script src="{{url_for('static',filename='extension/clipboard.min.js')}}"></script>
+<script src="{{url_for('static',filename='extension/dataTable/jquery.dataTables.min.js')}}"></script>
+<script src="{{url_for('static',filename='extension/dataTable/dataTables.bootstrap4.min.js')}}"></script>
+<script>
+    $(document).ready(function () {
+        $(".clickReback").on("click", function () {
+            history.go(-1)
+        })
+        $(".objDelete").on('click', function () {
+            var deleteUrl = $(this).attr('deleteUrl')
+            if (confirm('确定要删除该图像吗?') == true) {
+                $(window).attr('location', deleteUrl);
+            }
+        });
+        $('.table').DataTable();
+    });
+    //复制图片地址
+    var clipboard = new ClipboardJS('.copeImgSrc', {
+        text: function () {
+            return clipboard.text["arguments"][0].attributes["imgsrc"]["value"];
+        }
+    });
+    clipboard.on('success', function (e) {
+        alert('复制成功，Ctrl+v粘贴');
+    });
+    clipboard.on('error', function (e) {
+        alert(e);
+    });
+</script>
+{% endblock %}

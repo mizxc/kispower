@@ -1,0 +1,194 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}相册管理-管理后台{% endblock %}
+
+{% block customCss %}
+<link rel="stylesheet" href="{{url_for('static',filename='extension/dataTable/dataTables.bootstrap4.min.css')}}">
+{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-4 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">添加图片</h4>
+                <form class="forms-sample" action="{{ url_for('admin.photoAlbumPhotoAdd') }}"
+                      enctype="multipart/form-data" method='post'>
+                    <div class="form-group">
+                        <label for="exampleSelectGender">添加到相册</label>
+                        <select class="form-control" name="albumId">
+                            {%for album in albums%}
+                            <option value="{{album.id}}">{{album.title}}</option>
+                            {%endfor%}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="mdi mdi-multiplication text-danger"></i>上传图片png/jpg/gif（小于2M）</label>
+                        <input type="file" name="photo" class="file-upload-default">
+                        <div class="input-group col-xs-12">
+                            <input type="text" class="form-control file-upload-info" disabled
+                                   placeholder="Upload Image">
+                            <span class="input-group-append">
+                        <button class="file-upload-browse btn btn-gradient-light" type="button">选择文件</button>
+                      </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleTextarea1">图像介绍</label>
+                        <textarea class="form-control" id="exampleTextarea1" rows="6" name="introduction"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-gradient-success mr-2">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">最近添加的20张图片</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>所属相册</th>
+                            <th>图像</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for p in photos%}
+                        <tr>
+                            <td>
+                                {{loop.index}}
+                            </td>
+                            <td><a href="{{ url_for('admin.photoAlbumManage',id=p.album.id) }}">{{p.album.title}}</a></td>
+                            <td>
+                                <img class="img-ss" alt="image"
+                                     src="{{url_for('static',filename=p.path)}}">
+                            </td>
+                            <td>
+                                <button class="btn btn-gradient-info btn-xs copeImgSrc"
+                                   imgSrc="{{url_for('static',filename=p.path)}}">复制图片地址</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">添加相册</h4>
+                <p class="card-description">请填写相册名称</p>
+                <form class="forms-sample" action="{{ url_for('admin.photoAlbumAdd') }}" method='post'>
+                    <div class="form-group">
+                        <label for="exampleInputName1"><i class="mdi mdi-multiplication text-danger"></i>相册名称</label>
+                        <input type="text" class="form-control" id="exampleInputName1" name="title">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleSelectGender">主页是否展示该相册</label>
+                        <select class="form-control" name="isShow">
+                            <option value="y">是</option>
+                            <option value="n">否</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleTextarea1">相册介绍</label>
+                        <textarea class="form-control" id="exampleTextarea1" rows="6" name="introduction"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-gradient-success mr-2">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">相册列表</h4>
+                <p class="card-description"> 可排序 </p>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>相册名称</th>
+                            <th>图片数量</th>
+                            <th>主页是否展示</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for p in albums%}
+                        <tr>
+                            <td>
+                                {{p.number}}
+                            </td>
+                            <td>{{p.title}}</td>
+                            <td>{{p.photoCount}}</td>
+                            <td>{%if p.isShow%}是{%else%}否{%endif%}</td>
+                            <td>
+                                <button class="btn btn-gradient-danger btn-xs objDelete"
+                                        deleteUrl="{{ url_for('admin.photoAlbumDelete',id=p.id) }}">删除
+                                </button>
+                                <a class="btn btn-gradient-info btn-xs"
+                                   href="{{ url_for('admin.photoAlbumEdit',id=p.id) }}">修改相册</a>
+                                <a class="btn btn-gradient-info btn-xs"
+                                   href="{{ url_for('admin.photoAlbumManage',id=p.id) }}">管理图片</a>
+                                {% if loop.index!=1%}
+                                <a class="btn btn-gradient-success btn-xs"
+                                   href="{{ url_for('admin.photoAlbumSort',number=p.number,direction='up') }}">上移</a>
+                                {% endif %}
+                                {% if loop.index!=albums.count()%}
+                                <a class="btn btn-gradient-info btn-xs"
+                                   href="{{ url_for('admin.photoAlbumSort',number=p.number,direction='down') }}">下移</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script src="{{url_for('static',filename='extension/purpleAdmin/js/file-upload.js')}}"></script>
+<script src="{{url_for('static',filename='extension/clipboard.min.js')}}"></script>
+<script src="{{url_for('static',filename='extension/dataTable/jquery.dataTables.min.js')}}"></script>
+<script src="{{url_for('static',filename='extension/dataTable/dataTables.bootstrap4.min.js')}}"></script>
+<script>
+    $(document).ready(function () {
+        $(".objDelete").on('click', function () {
+            var deleteUrl = $(this).attr('deleteUrl')
+            if (confirm('确定要删除吗?') == true) {
+                $(window).attr('location', deleteUrl);
+            }
+        });
+        $('.table').DataTable();
+    });
+    //复制图片地址
+    var clipboard = new ClipboardJS('.copeImgSrc', {
+        text: function () {
+            return clipboard.text["arguments"][0].attributes["imgsrc"]["value"];
+        }
+    });
+    clipboard.on('success', function (e) {
+        alert('复制成功，Ctrl+v粘贴');
+    });
+    clipboard.on('error', function (e) {
+        alert(e);
+    });
+</script>
+{% endblock %}

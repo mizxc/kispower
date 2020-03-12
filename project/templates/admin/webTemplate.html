@@ -1,0 +1,28 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}网站主题-管理后台{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    {%for tpl in tpls%}
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">
+                    主题：{{tpl[0]}}
+                    <span class="text-danger">{%if tpl[0] in current_user.custom['homeTemplate']%}✔{%endif%}</span>
+                </h4>
+                <p class="card-description">
+                    <img src="{{tpl[1]}}" width="100%"><br>
+                </p>
+                <a href="{{url_for('admin.webTemplate',tpl=tpl[0])}}" class="btn btn-gradient-success mr-2">设定该主题</a>
+            </div>
+        </div>
+    </div>
+    {%endfor%}
+</div>
+{% endblock %}

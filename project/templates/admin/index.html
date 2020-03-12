@@ -1,0 +1,23 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}管理后台{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{{p.title}}</h4>
+                <p class="card-description">{{p.tags}}</p>
+                <p>
+                    {{p.content|safe}}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+.search-container {
+  overflow: hidden;
+  float: right;
+  height: 38px;
+  width: 38px;
+  -moz-transition: all 0.35s;
+  -webkit-transition: all 0.35s;
+  border-radius: 50px;
+  border: 1px solid transparent;
+  background-color: #fff;
+}
+.search-container {
+  /* position: absolute;
+  right: 0;
+  top: 20px;
+  box-shadow: 3.536px 3.536px 10px 0px rgba(0, 0, 0, 0.1); */
+}
+
+.search-container:hover, .search-container:focus, .search-container:focus-within {
+  width: 25em;
+  border-radius: 50px 50px 50px 50px;
+  outline: none;
+  border: 1px solid #ddd;
+}
+.search-container:hover input, .search-container:focus input, .search-container:focus-within input {
+  display: inline-block;
+    width: 312px;
+    padding: 7px 0px 7px 20px;
+}
+.main-menu input {
+  -webkit-appearance: none;
+  appearance: none;
+  float: left;
+  width: 0em;
+  margin-right: -4.5em;
+  background: #fff;
+  color: #6A5D4F;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 0px;
+  border: 0;
+  border-radius: 5px;
+  -moz-transition: all 0.25s;
+  -webkit-transition: all 0.25s;
+}
+input:focus {
+  outline: none;
+}
+
+.button {
+  float: right;
+  height: 38px;
+  width: 38px;
+  line-height: 38px;
+  background: -moz-linear-gradient( -90deg, rgb(249,250,252) 0%, rgb(249,234,184) 100%);
+  background: -webkit-linear-gradient( -90deg, rgb(249,250,252) 0%, rgb(249,234,184) 100%);
+  background: -ms-linear-gradient( -90deg, rgb(249,250,252) 0%, rgb(249,234,184) 100%);
+  text-align: center;
+  font-size: 14px;
+  color: #FDF6E3;
+  border-radius: 50%;
+  box-shadow: 3.536px 3.536px 10px 0px rgba(0, 0, 0, 0.1);
+}
+.search-icon{
+  padding: 30.5px 30.5px 0px 0px !important;
+}

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+    {%set custom = current_user.getCustom()%}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="description" content="{{custom['webIntro']}}">
+    <meta name="keywords" content="{{custom['webKeywords']}}">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300i,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/photon/fonts/icomoon/style.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/photon/fonts/flaticon/font/flaticon.css')}}">
+    <link rel="stylesheet"
+          href="{{url_for('static',filename='theme/photon/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/photon/css/magnific-popup.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/photon/css/jquery-ui.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/photon/css/owl.carousel.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/photon/css/owl.theme.default.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/photon/css/lightgallery.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/photon/css/swiper.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/photon/css/aos.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/photon/css/style.css')}}">
+    {% block customCss %}{% endblock %}
+    {%if custom['statisticalCode']%}
+    {{custom['statisticalCode']|safe}}
+    {%endif%}
+</head>
+
+<body>
+<div class="site-wrap">
+    <div class="site-mobile-menu">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div>
+    <header class="site-navbar py-3 {%if mark!='index'%}border-bottom{%endif%}" role="banner">
+
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-6 col-xl-2" data-aos="fade-down">
+                    <h1 class="mb-0"><a href="/" class="text-black h2 mb-0">{{custom['webName']}}</a></h1>
+                </div>
+                <div class="col-10 col-md-8 d-none d-xl-block" data-aos="fade-down">
+                    <nav class="site-navigation position-relative text-right text-lg-center" role="navigation">
+                        <ul class="site-menu js-clone-nav mx-auto d-none d-lg-block">
+                            <li {%if mark=='index'%}class="active"{%endif%}><a href="/">首页</a></li>
+                            <li {%if mark=='kshare'%}class="active"{%endif%}><a href="{{url_for('home.kshare')}}">知识</a>
+                            </li>
+                            <li {%if mark=='navigation'%}class="active"{%endif%}><a
+                                    href="{{url_for('home.navigation')}}">导航</a></li>
+                            <li class="has-children {%if mark=='blog'%}active{%endif%}">
+                                <a href="{{url_for('home.blog')}}">博客</a>
+                                <ul class="dropdown">
+                                    {%for item in current_user.getBlogColumn()%}
+                                    <li>
+                                        <a href="{{url_for('home.blogColumn',columnId=item.id)}}">{{item.title}}</a>
+                                    </li>
+                                    {%endfor%}
+                                </ul>
+                            </li>
+                            <li class="has-children {%if mark=='photo'%}active{%endif%}">
+                                <a href="{{url_for('home.photoAlbum')}}">相册</a>
+                                <ul class="dropdown">
+                                    {%for item in current_user.getPhotoAlbum()%}
+                                    <li><a href="{{url_for('home.photo',albumId=item.id)}}">{{item.title}}</a></li>
+                                    {%endfor%}
+                                </ul>
+                            </li>
+                            <li {%if mark=='about'%}class="active"{%endif%}><a
+                                    href="{{url_for('home.about')}}">About</a></li>
+                            <li {%if mark=='contact'%}class="active"{%endif%}><a href="{{url_for('home.contact')}}">Contact</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <div class="col-6 col-xl-2 text-right" data-aos="fade-down">
+                    <div class="d-none d-xl-inline-block">
+                        <ul class="site-menu js-clone-nav ml-auto list-unstyled d-flex text-right mb-0"
+                            data-class="social">
+                            <li>
+                                <img src="{{url_for('static',filename=custom['weixin'])}}" height="60px">
+                            </li>
+                            <li class="mt-3">
+                                <a href="{{custom['weibo']}}" class="pl-3 pr-3"><span class="icon-weibo"></span></a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="d-inline-block d-xl-none ml-md-0 mr-auto py-3" style="position: relative; top: 3px;"><a
+                            href="#" class="site-menu-toggle js-menu-toggle text-black"><span
+                            class="icon-menu h3"></span></a></div>
+                </div>
+            </div>
+        </div>
+
+    </header>
+    {% block content %}{% endblock %}
+    <div class="footer py-4">
+        <div class="container-fluid text-center">
+            <p>
+                {{custom['copyright']|safe}}
+            </p>
+        </div>
+    </div>
+</div>
+
+
+<script src="{{url_for('static',filename='theme/photon/js/jquery-3.3.1.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/photon/js/jquery-migrate-3.0.1.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/photon/js/jquery-ui.js')}}"></script>
+<script src="{{url_for('static',filename='theme/photon/js/popper.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/photon/js/bootstrap.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/photon/js/owl.carousel.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/photon/js/jquery.stellar.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/photon/js/jquery.countdown.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/photon/js/jquery.magnific-popup.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/photon/js/swiper.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/photon/js/aos.js')}}"></script>
+<script src="{{url_for('static',filename='theme/photon/js/picturefill.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/photon/js/lightgallery-all.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/photon/js/jquery.mousewheel.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/photon/js/main.js')}}"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#lightgallery').lightGallery();
+    });
+</script>
+{% block customJs %}{% endblock %}
+</body>
+</html>

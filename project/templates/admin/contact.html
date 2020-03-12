@@ -1,0 +1,101 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}contact消息-管理后台{% endblock %}
+
+{% block customCss %}
+<link rel="stylesheet" href="{{url_for('static',filename='extension/dataTable/dataTables.bootstrap4.min.css')}}">
+{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">contact消息</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>名字</th>
+                            <th>email</th>
+                            <th>消息</th>
+                            <th>时间</th>
+                            <th>是否处理</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for m in messages%}
+                        <tr>
+                            <td>
+                                {{loop.index}}
+                            </td>
+                            <td>{{m.name}}</td>
+                            <td>{{m.email}}</td>
+                            <td>{{m.message}}</td>
+                            <td>{{m.at}}</td>
+                            <td class="textProcessed">{%if m.processed%}已处理{%else%}未处理{%endif%}</td>
+                            <td>
+                                <button class="btn btn-gradient-danger btn-xs objDelete" postUrl="{{ url_for('admin.contactDelete',id=m.id) }}">删除</button>
+                                <button class="btn btn-gradient-success btn-xs objProcessed" postUrl="{{ url_for('admin.contactProcessed',id=m.id) }}">标记处理</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script src="{{url_for('static',filename='extension/dataTable/jquery.dataTables.min.js')}}"></script>
+<script src="{{url_for('static',filename='extension/dataTable/dataTables.bootstrap4.min.js')}}"></script>
+<script>
+    $(document).ready(function () {
+        $(".objDelete").on('click', function () {
+            var postUrl = $(this).attr('postUrl')
+            var temp = $(this)
+            if (confirm('确定要删除吗?') == true) {
+                $.ajax({
+                    type: "POST",
+                    url: postUrl,
+                    success: function (ret) { //ret={'status':true,'info':'.....'}
+                        if (ret.status){
+                            temp.parent().parent().remove()
+                        }
+                    }
+                });
+            }
+        });
+        $(".objProcessed").on('click', function () {
+            var postUrl = $(this).attr('postUrl')
+            var temp = $(this)
+            $.ajax({
+                type: "POST",
+                url: postUrl,
+                success: function (ret) { //ret={'status':true,'info':'.....'}
+                    if (ret.status){
+                        alert(ret.info)
+                        var text = temp.parent().parent().find('.textProcessed').text()
+                        if(text=='未处理'){
+                            temp.parent().parent().find('.textProcessed').text('已处理')
+                        }else{
+                            temp.parent().parent().find('.textProcessed').text('未处理')
+                        }
+                    }
+                }
+            });
+        });
+        $('.table').DataTable();
+    });
+</script>
+{% endblock %}

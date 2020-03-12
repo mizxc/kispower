@@ -1,0 +1,54 @@
+{% extends 'theme/louie/_base.html' %}
+
+{% block title %}知识分享-{{custom['webName']}}{% endblock %}
+
+{% block content %}
+<section class="ftco-section ftco-bread">
+    <div class="container">
+        <div class="row no-gutters slider-text justify-content-center align-items-center">
+            <div class="col-md-8 ftco-animate fadeInUp ftco-animated">
+                <p class="breadcrumbs"><span class="mr-2"><a href="/">Home</a></span> <span>Knowledge</span></p>
+                <h1 class="bread">My Knowledge Sharing</h1>
+                <p class="breadcrumbs mt-2">
+                    <span class="mr-2"><a href="">Kispower共享知识库</a></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="ftco-section">
+    <div class="container">
+        <div class="row">
+            {%for k in ks%}
+            <div class="col-md-4 d-flex align-self-stretch ftco-animate fadeInUp ftco-animated mb-5">
+                <div class="media block-6 services d-block shadow p-4">
+                    <a class="media-body" href="{{url_for('home.kispowerKShareShow',id=k.id)}}" target="_blank">
+                        <h3 class="heading mb-3">
+                            <span class="icon icon-title"></span>
+                            {{k.title}}
+                        </h3>
+                        <p>{{k.introduction|truncate(60, killwords=True, leeway=0)}}</p>
+                    </a>
+                    <p>{{k.shareTime}}</p>
+                </div>
+            </div>
+            {%endfor%}
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="block-27">
+                    <ul>
+                        {%if page>0%}
+                        <li><a href="{{url_for('home.kshare',page=page-1)}}">&lt;</a></li>
+                        {%endif%}
+                        {%if ks.count()>(page+1)*11%}
+                        <li><a href="{{url_for('home.kshare',page=page+1)}}">&gt;</a></li>
+                        {%endif%}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

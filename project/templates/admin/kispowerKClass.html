@@ -1,0 +1,105 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}知识管理-管理后台{% endblock %}
+{% block customCss %}
+<link rel="stylesheet" href="{{url_for('static',filename='extension/dataTable/dataTables.bootstrap4.min.css')}}">
+{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">添加知识根目录</h4>
+                <p class="card-description">请填写信息</p>
+                <form class="forms-sample" action="{{ url_for('admin.kispowerKClassAdd') }}" method='post'>
+                    <div class="form-group">
+                        <label for="exampleInputName1"><i class="mdi mdi-multiplication text-danger"></i>根目录名称</label>
+                        <input type="text" class="form-control" id="exampleInputName1" name="title">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleTextarea1">根目录介绍</label>
+                        <textarea class="form-control" id="exampleTextarea1" rows="6" name="introduction"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-gradient-success mr-2">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">根目录列表</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>根目录名称</th>
+                            <th>根目录介绍</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for k in kcs%}
+                        <tr>
+                            <td>
+                                {{loop.index}}
+                            </td>
+                            <td><a href="{{ url_for('admin.kispowerKClassShow',id=k.id) }}" target="_blank">{{k.title}}</a></td>
+                            <td>
+                                {%if k.introduction%}
+                                    <a href="{{ url_for('admin.kispowerKClassEdit',id=k.id) }}">
+                                        {{k.introduction|truncate(30, killwords=True, leeway=0)}}
+                                    </a>
+                                {%endif%}
+                            </td>
+                            <td>
+                                <button class="btn btn-gradient-danger btn-xs objDelete"
+                                        deleteUrl="{{ url_for('admin.kispowerKClassDelete',id=k.id) }}">删除
+                                </button>
+                                {%if k.isTop%}
+                                <a class="btn btn-gradient-success btn-xs"
+                                   href="{{ url_for('admin.kispowerKClassIsTop',id=k.id) }}">
+                                    取消置顶</a>
+                                {%else%}
+                                <a class="btn btn-gradient-info btn-xs"
+                                   href="{{ url_for('admin.kispowerKClassIsTop',id=k.id) }}">
+                                    置顶</a>
+                                {%endif%}
+
+                                <a class="btn btn-gradient-info btn-xs"
+                                   href="{{ url_for('admin.kispowerKClassEdit',id=k.id) }}">编辑根目录</a>
+                                <a class="btn btn-gradient-info btn-xs" target="_blank"
+                                   href="{{ url_for('admin.kispowerKClassShow',id=k.id) }}">管理知识</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script src="{{url_for('static',filename='extension/dataTable/jquery.dataTables.min.js')}}"></script>
+<script src="{{url_for('static',filename='extension/dataTable/dataTables.bootstrap4.min.js')}}"></script>
+<script>
+    $(document).ready(function () {
+        $(".objDelete").on('click', function () {
+            var deleteUrl = $(this).attr('deleteUrl')
+            if (confirm('确定要删除吗?') == true) {
+                $(window).attr('location', deleteUrl);
+            }
+        });
+        $('.table').DataTable();
+    });
+</script>
+{% endblock %}

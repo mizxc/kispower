@@ -1,0 +1,32 @@
+{% extends 'theme/cassi/_base.html' %}
+
+{% block title %}about-{{custom['webName']}}{% endblock %}
+
+{% block content %}
+<div class="page-top-section">
+    {%set custom = current_user.getCustom()%}
+    <div class="page-top-warp set-bg" data-setbg="{{current_user.getRandomImage()}}"
+         style="background-image: url({{current_user.getRandomImage()}});">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9">
+                    <h2>Wellcome To {{custom['webName']}}</h2>
+                    <p>{{custom['webIntro']}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="about-section">
+    <div class="container">
+        {{custom['aboutMe']|safe}}
+        <div>
+            <!--PC和WAP自适应版-->
+            <div id="SOHUCS" sid="about"></div>
+            {%if custom['commentCode']%}
+            {{custom['commentCode']|safe}}
+            {%endif%}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}时间管理-后台管理{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block customCss %}
+<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='extension/simditor/simditor.css')}}" />
+<style>
+    .simditor .simditor-body {
+        overflow-y: scroll !important;
+        min-height: 600px !important;
+        max-height: 600px !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-5 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{{p.title}} 详情</h4>
+                <p class="card-description">
+                    {% if planType != 'dp'%}
+                    {{p.startTime}} 至 {{p.endTime}}<br>
+                    {% endif %}
+                    任务完成度：{{p.doneCount}}/{{p.plans|length}}
+                </p>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>级别</th>
+                            <th>任务</th>
+                            <th>是否完成</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for i in p.plans%}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td>
+                                {% if i.level == 'L1' %}
+                                <label class="badge badge-danger">紧急重要</label>
+                                {% elif i.level == 'L2' %}
+                                <label class="badge badge-warning">紧急不重要</label>
+                                {% elif i.level == 'L3' %}
+                                <label class="badge badge-info">重要不紧急</label>
+                                {% else %}
+                                <label class="badge badge-success">不重要不紧急</label>
+                                {% endif %}
+                            </td>
+                            <td>{{i.title}}</td>
+                            <td>
+                                <div class="form-check mt-0 mb-3">
+                                    <label class="form-check-label">
+                                        <input class="checkbox" type="checkbox" {% if i.isDone %}checked{% endif %}
+                                               objId="{{p.id}}" objPlanType="{{planType}}" objNumber="{{loop.index-1}}">
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{{p.title}} 总结</h4>
+                <p class="card-description">
+                    未经审视的人生，不值得度过，记录成长，记录欢乐与忧伤
+                </p>
+                <form class="forms-sample">
+                    <div class="form-group">
+                        <textarea class="form-control" id="editor" rows="35" name="summarize">{% if p.summarize %}{{p.summarize}}{% endif %}</textarea>
+                    </div>
+                    <button type="button" class="btn btn-gradient-success mr-2" id="postDataBtn">提交</button>
+                    <button type="button" class="btn btn-gradient-info mr-2 clickReback">返回</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script src="{{url_for('static',filename='local/js/ajaxPost.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='extension/simditor/module.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='extension/simditor/hotkeys.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='extension/simditor/uploader.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='extension/simditor/simditor.js')}}"></script>
+<script>
+    $(document).ready(function () {
+        $(".checkbox").on('click', function () {
+            var id = $(this).attr('objId');
+            var planType = $(this).attr('objPlanType');
+            var number = $(this).attr('objNumber');
+            postDataToUrl({
+                'id': id,
+                'planType': planType,
+                'number': number
+            }, "{{url_for('admin.timeManagementPlanDone')}}");
+        });
+        $(".clickReback").on("click", function () {
+            history.go(-1)
+        });
+        var editor = new Simditor({
+            textarea: $('#editor'),
+            //optional options
+            //placeholder: '这里输入文字...',
+            toolbar:  ['title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'hr', '|', 'indent', 'outdent', 'alignment'], //工具条都包含哪些内容
+            defaultImage: '/static/local/images/editorImage.jpg',//编辑器插入的默认图片，此处可以删除
+        });
+
+        $("#postDataBtn").on("click", function () {
+            var tempThis = $(this)
+            tempThis.addClass('d-none')
+            summarize = $("textarea[name='summarize']").val()
+            postUrl="{{ url_for('admin.timeManagementWriteSummarize',planType=planType,id=p.id) }}"
+            $.ajax({
+                type: "POST",
+                url: postUrl,
+                data:{'summarize':summarize},
+                success: function (ret) { //ret={'status':true,'msg':'.....'}
+                    alert(ret.msg)
+                    if (ret.status){
+                        window.location.href = ret.url;
+                    }
+                    tempThis.removeClass('d-none')
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}网站设置-管理后台{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">网站名称</h4>
+                <form class="forms-sample" action="{{ url_for('admin.setWebInfo') }}" method='post'>
+                    <div class="form-group">
+                        <label>名称</label>
+                        <input type="text" class="form-control" value="{{current_user.custom['webName']}}" name="webName">
+                    </div>
+                    <div class="form-group">
+                        <label>网站简介</label>
+                        <input type="text" class="form-control" value="{{current_user.custom['webIntro']}}" name="webIntro">
+                    </div>
+                    <div class="form-group">
+                        <label>网站关键词</label>
+                        <input type="text" class="form-control" value="{{current_user.custom['webKeywords']}}" name="webKeywords">
+                    </div>
+                    <button type="submit" class="btn btn-gradient-success mr-2">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">网站logo</h4>
+                <p class="card-description">
+                    <img src="{{url_for('static',filename=current_user.custom['logo'])}}" height="50px"><br>
+                </p>
+                <form class="forms-sample" action="{{ url_for('admin.setWebLogo') }}" enctype="multipart/form-data" method="post">
+                    <div class="form-group">
+                        <label>请上传小于1M的jpg/png/gif图片</label>
+                        <input type="file" name="img" class="file-upload-default">
+                        <div class="input-group col-xs-12">
+                            <input type="text" class="form-control file-upload-info" disabled
+                                   placeholder="Upload Image">
+                            <span class="input-group-append">
+                            <button class="file-upload-browse btn btn-gradient-light" type="button">选择文件</button>
+                          </span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-gradient-success mr-2">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">网站图标</h4>
+                <p class="card-description">
+                    <img src="{{url_for('static',filename=current_user.custom['favicon'])}}" height="50px"><br>
+                </p>
+                <form class="forms-sample" action="{{ url_for('admin.setWebFavicon') }}" enctype="multipart/form-data" method="post">
+                    <div class="form-group">
+                        <label>请上传小于1M的jpg/png/gif图标（96x96）</label>
+                        <input type="file" name="img" class="file-upload-default">
+                        <div class="input-group col-xs-12">
+                            <input type="text" class="form-control file-upload-info" disabled
+                                   placeholder="Upload Image">
+                            <span class="input-group-append">
+                            <button class="file-upload-browse btn btn-gradient-light" type="button">选择文件</button>
+                          </span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-gradient-success mr-2">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">版权所有</h4>
+                <form class="forms-sample" action="{{ url_for('admin.setCopyright') }}" method='post'>
+                    <div class="form-group">
+                        <label>申明版权信息</label>
+                        <input type="text" class="form-control" value="{{current_user.custom['copyright']}}" name="copyright">
+                    </div>
+                    <button type="submit" class="btn btn-gradient-success mr-2">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">添加网站数据统计代码</h4>
+                <form class="forms-sample" action="{{ url_for('admin.setStatisticalCode') }}" method='post'>
+                    <div class="form-group">
+                        <label><a>点击查看如何添加</a></label>
+                        <textarea class="form-control" rows="6" name="statisticalCode">{%if current_user.custom['statisticalCode']%}{{current_user.custom['statisticalCode']}}{%endif%}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-gradient-success mr-2">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">添加博客文章云评论代码</h4>
+                <form class="forms-sample" action="{{ url_for('admin.setCommentCode') }}" method='post'>
+                    <div class="form-group">
+                        <label><a>点击查看如何添加</a></label>
+                        <textarea class="form-control" rows="6" name="commentCode">{%if current_user.custom['commentCode']%}{{current_user.custom['commentCode']}}{%endif%}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-gradient-success mr-2">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script src="{{url_for('static',filename='extension/purpleAdmin/js/file-upload.js')}}"></script>
+{% endblock %}

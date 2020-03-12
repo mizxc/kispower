@@ -1,0 +1,28 @@
+{% extends 'theme/cassi/_base.html' %}
+
+{% block title %}相册-{{custom['webName']}}{% endblock %}
+
+{% block content %}
+<section class="team-section">
+    <div class="container-fluid">
+        <div class="row">
+            {%for album in current_user.getPhotoAlbum()%}
+                {% set photo = current_user.getPhotoByAlbum(album.id)%}
+                {%if photo%}
+                <div class="col-xl-4 col-md-4 col-sm-6 p-0">
+                <div class="team-item">
+                    <img src="{{url_for('static',filename=photo.path)}}" height="400px" width="auto">
+                    <div class="team-meta">
+                        <a class="tm-text" href="{{url_for('home.photo',albumId=album.id)}}">
+                            <h5>相册：{{album.title}}</h5>
+                            {%if album.introduction%}<p>{{album.introduction}}</p>{%endif%}
+                        </a>
+                    </div>
+                </div>
+            </div>
+                {%endif%}
+            {%endfor%}
+        </div>
+    </div>
+</section>
+{% endblock %}

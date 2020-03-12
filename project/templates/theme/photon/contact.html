@@ -1,0 +1,90 @@
+{% extends 'theme/photon/_base.html' %}
+
+{% block title %}contact-{{custom['webName']}}{% endblock %}
+
+{% block content %}
+<div class="aos-init aos-animate" data-aos="fade">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-7">
+                <div class="row site-section">
+                    <div class="col-12 ">
+                        <h2 class="site-section-heading text-center">Contact</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-9 mb-5">
+                        <div>
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="text-black" for="email">Email</label>
+                                    <input type="email" name="email" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="text-black" for="subject">Your Name</label>
+                                    <input name="name" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label class="text-black" for="message">Message</label>
+                                    <textarea name="message" id="message" cols="30" rows="7" class="form-control"
+                                              placeholder="Write your notes or questions here..."></textarea>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <input type="submit" value="Send Message" id="postDataBtn"
+                                           class="btn btn-primary py-2 px-4 text-white">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 ml-auto">
+                        <div class="mb-3 bg-white">
+                            <p class="mb-0 font-weight-bold">Follow Me</p>
+                            <p class="mb-4">
+                                <img src="{{url_for('static',filename=custom['weixin'])}}" height="150px">
+                            </p>
+                            <p>
+                                <a href="{{custom['weibo']}}" class="pl-3 pr-3"><span class="icon-weibo"></span></a>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script>
+    $(document).ready(function () {
+        $("#postDataBtn").on("click", function () {
+            var tempThis = $(this)
+            tempThis.addClass('d-none')
+            var name = $("input[name='name']").val()
+            var email = $("input[name='email']").val()
+            var message = $("textarea[name='message']").val()
+            postUrl = "{{ url_for('home.contact') }}"
+            $.ajax({
+                type: "POST",
+                url: postUrl,
+                data: {'name': name, 'email': email, 'message': message},
+                success: function (ret) { //ret={'status':true,'info':'.....'}
+                    alert(ret.info)
+                    if (ret.status) {
+                        window.location.href = postUrl;
+                    }
+                    tempThis.removeClass('d-none')
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
+

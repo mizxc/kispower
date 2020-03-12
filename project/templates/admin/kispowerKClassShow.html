@@ -1,0 +1,269 @@
+{% extends 'admin/_base_kispower.html' %}
+
+{% block title %}知识管理-后台管理{% endblock %}
+
+{% block customCss %}
+<link type="text/css" rel="stylesheet"
+      href="{{url_for('static',filename='extension/contextMenu/jquery.contextMenu.css')}}"/>
+<link type="text/css" rel="stylesheet"
+      href="{{url_for('static',filename='extension/font-awesome/css/font-awesome.min.css')}}"/>
+<link rel="stylesheet" type="text/css"
+      href="{{url_for('static',filename='extension/simditor/simditor.css')}}"/>
+<style>
+    .jsmind-inner {
+        moz-user-select: -moz-none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    #kNote {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        -webkit-transform: rotate(360deg);
+        animation: rotation 8s linear infinite;
+        -moz-animation: rotation 8s linear infinite;
+        -webkit-animation: rotation 8s linear infinite;
+        -o-animation: rotation 8s linear infinite;
+        z-index: 100;
+    }
+    #kLabel {
+        position: absolute;
+        top: 10px;
+        left: 63px;
+        -webkit-transform: rotate(360deg);
+        animation: rotation 8s linear infinite;
+        -moz-animation: rotation 8s linear infinite;
+        -webkit-animation: rotation 8s linear infinite;
+        -o-animation: rotation 8s linear infinite;
+        z-index: 100;
+    }
+
+    #kNote:hover {
+        top: 8px;
+        cursor: pointer;
+    }
+    #kLabel:hover {
+        top: 8px;
+        cursor: pointer;
+    }
+
+    @-webkit-keyframes rotation {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    #versionSaveTime {
+        position: absolute;
+        top: 20px;
+        left: 118px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<a href="http://www.kispower.cn/kispowerKShareShow/5e5b8c83286e2eeec658ce97" target="_blank">
+    <img class="img-sm rounded-circle mr-3" id="kNote" src="{{url_for('static',filename='local/images/note.png')}}"
+     alt="image" title="右键菜单、快捷键使用、保存数据等介绍！">
+</a>
+<img class="img-sm rounded-circle mr-3" id="kLabel" src="{{url_for('static',filename='local/images/save.png')}}"
+     alt="image" title="每隔1分钟自动保存一次数据，关闭窗口前也请先点击保存数据！">
+<span id="versionSaveTime"></span>
+<div id="jsmind_container" kClassId="{{id}}"></div>
+{% include 'admin/_loading.html' %}
+<div class="modal fade" id="edit-title-Modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel">修改节点标题</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="card-description mb-3">
+                    节点标题节支持文本、图片、视频代码、富文本、html<br>
+                    1、简单标题：请选择普通文本模式<br>
+                    2、插入视频嵌入代码：请选择普通文本模式，粘贴视频嵌入代码<br>
+                    3、如会写html代码：请选择普通文本模式，写入html代码<br>
+                    4、图片（宽度请设置600px内）、展示的内容多、展示的内容有样式修饰：请选择富文本模式编辑</p>
+                <form class="forms-sample">
+                    <div class="form-group">
+                        <label for="exampleSelectGender" class="text-danger">*请选择标题模式</label>
+                        <select class="form-control" id="selectTextType">
+                            <option value="ordinary">普通文本</option>
+                            <option value="rich">富文本</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="objOrdinaryText">
+                        <label for="exampleInputName1"><i class="mdi mdi-multiplication text-danger"></i>普通文本标题</label>
+                        <input type="text" class="form-control" id="ordinaryTextTitle">
+                    </div>
+                    <div class="form-group d-none" id="objRichText">
+                        <label for="exampleTextarea1"><i class="mdi mdi-multiplication text-danger"></i>富文本标题</label>
+                        <textarea class="form-control" id="richTextTitle" rows="4"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-gradient-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-gradient-success" id="postEditTitle">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="share-node-Modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel">分享该节点知识</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="card-description">
+                    分享该节点知识：<br>
+                    1、在右侧菜单栏：知识管理-我的知识分享，会生成一条包含该节点及下属节点的记录<br>
+                    2、该条分享知识的标题/标签/简介/链接，会同步到Kispower的知识分享库里（内容不会同步）<br>
+                    3、网友在<a href="http://www.kispower.cn/kshareBase" target="_blank">Kispower知识共享库</a>里，可以点击链接，跳转到你的分享知识页面<br>
+                    4、感谢你的知识分享，赠人玫瑰，手有余香！</p>
+                <hr>
+                <div class="forms-sample">
+                    <div class="form-group">
+                        <label for="exampleInputName1"><i class="mdi mdi-multiplication text-danger"></i>标题</label>
+                        <input type="text" class="form-control" id="shareTitle">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputName1"><i class="mdi mdi-multiplication text-danger"></i>标签（概括性的词语：以空格分割，方便检索）</label>
+                        <input type="text" class="form-control" id="shareTag">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputName1"><i class="mdi mdi-multiplication text-danger"></i>显示模式</label>
+                        <select class="form-control" id="shareMode">
+                            <option value="full">节点分布在两边</option>
+                            <option value="side">节点分布在右边</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleTextarea1"><i class="mdi mdi-multiplication text-danger"></i>简介</label>
+                        <textarea class="form-control" id="shareIntroduction" rows="10"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-gradient-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-gradient-success" id="postShareNode">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="export-node-Modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel">导出节点知识</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="forms-sample">
+                    <div class="form-group">
+                        <label for="exampleInputName1"><i class="mdi mdi-multiplication text-danger"></i>导出的文件名：</label>
+                        <input type="text" class="form-control" id="exportNodeFileName">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-gradient-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-gradient-success" id="postExportNodeFileName">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="import-node-Modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel">导入节点知识</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="card-description">导入的知识会作为子节点，自动加载到所选节点上</p>
+                <div class="forms-sample">
+                    <div class="form-group">
+                        <label for="exampleInputName1"><i
+                                class="mdi mdi-multiplication text-danger"></i>上传.kispower文件</label>
+                        <input type="file" id="importFile" class="file-upload-default">
+                        <div class="input-group col-xs-12">
+                            <input type="text" class="form-control file-upload-info" disabled>
+                            <span class="input-group-append">
+                            <button class="file-upload-browse btn btn-gradient-light" type="button">选择文件</button>
+                          </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-gradient-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-gradient-success" id="postImportNodeFile">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script src="{{url_for('static',filename='extension/jsmind/jsmind.draggable.js')}}"></script>
+<script src="{{url_for('static',filename='extension/purpleAdmin/js/file-upload.js')}}"></script>
+<script type="text/javascript"
+        src="{{url_for('static',filename='extension/contextMenu/jquery.contextMenu.min.js')}}"></script>
+<script type="text/javascript"
+        src="{{url_for('static',filename='extension/contextMenu/jquery.ui.position.js')}}"></script>
+<script type="text/javascript"
+        src="{{url_for('static',filename='local/js/jsMindBackground.js')}}"></script>
+<script type="text/javascript"
+        src="{{url_for('static',filename='local/js/contextMenuBackground.js')}}"></script>
+<script type="text/javascript"
+        src="{{url_for('static',filename='extension/simditor/module.js')}}"></script>
+<script type="text/javascript"
+        src="{{url_for('static',filename='extension/simditor/hotkeys.js')}}"></script>
+<script type="text/javascript"
+        src="{{url_for('static',filename='extension/simditor/uploader.js')}}"></script>
+<script type="text/javascript"
+        src="{{url_for('static',filename='extension/simditor/simditor.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='extension/html2canvas.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='extension/canvas2image.js')}}"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#selectTextType').on("change", function () {
+            if (this.value == 'ordinary') {
+                $("#objOrdinaryText").removeClass('d-none')
+                $("#objRichText").addClass('d-none')
+            } else {
+                $("#objRichText").removeClass('d-none')
+                $("#objOrdinaryText").addClass('d-none')
+            }
+        });
+        var richTextTitleEditor = new Simditor({
+            textarea: $('#richTextTitle'),
+            //optional options
+            toolbar: ['title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'hr', '|', 'indent', 'outdent', 'alignment'], //工具条都包含哪些内容
+            defaultImage: '/static/local/images/editorImage.jpg',//编辑器插入的默认图片，此处可以删除
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,262 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}时间管理-后台管理{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-7 mb-3">
+                        <h4 class="card-title">修改日计划</h4>
+                        <p class="card-description">日计划下属于某个周计划,日计划标题以选择的日期自动生成</p>
+                        <div class="forms-sample">
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <label for="exampleInputName1"><i
+                                            class="mdi mdi-multiplication text-danger"></i>所属周计划（只展示最近12周）</label>
+                                    <select class="form-control" name="weeklyPlanId">
+                                        {% for w in wps%}
+                                        <option value="{{w.id}}" {%if w.id==d.weeklyPlan.id %}selected="selected"
+                                                {%endif%}>{{w.title}}（{{w.startTime}} 至 {{w.endTime}}）
+                                        </option>
+                                        {%endfor%}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <label for="exampleInputName1">
+                                        <i class="mdi mdi-multiplication text-danger"></i>
+                                        日期
+                                        （日期在所属的周计划时间范围内，且不与该周计划下的其它日计划时间冲突）
+                                    </label>
+                                    <div class="input-group input-daterange d-flex align-items-center">
+                                        <input class="form-control timePicker-date" type="text" name="whichDay"
+                                               autocomplete="off" placeholder="选择日期" value="{{d.whichDay}}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName1">
+                                    日计划任务：包含执行任务的时间段（时间段可不填），任务级别，任务标题
+                                    <button class="btn btn-gradient-primary btn-xs" type="button" id="addItem">添加任务
+                                    </button>
+                                </label>
+                                <div id="allAddHtml">
+                                    {% for p in d.plans%}
+                                    <div class="row">
+                                        <div class="col-sm-1">
+                                            <button class="btn btn-gradient-danger btn-xs mt-2 deleteItem"
+                                                    type="button">删除
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group row">
+                                                <div class="col-sm-12">
+                                                    <select class="form-control" name="planLevel">
+                                                        {% for o in levels.keys()%}
+                                                        <option value="{{o}}" {%if p.level==o %}selected="selected"
+                                                                {%endif%}>{{levels[o]}}
+                                                        </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <div class="form-group row">
+                                                <div class="col-sm-12">
+                                                    <input class="form-control" placeholder="任务标题" name="planTitle"
+                                                           value="{{p.title}}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group row">
+                                                <div class="col-sm-12">
+                                                    <select class="form-control" name="isDone">
+                                                        <option value="n" {%if not p.isDone %}selected="selected"
+                                                                {%endif%}>未完成
+                                                        </option>
+                                                        <option value="y" {%if p.isDone %}selected="selected" {%endif%}>
+                                                            已完成
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {%endfor%}
+                                    <div id="addHtml">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <button class="btn btn-gradient-success mr-2" id="postDataBtn">提交</button>
+                            <button type="button" class="btn btn-gradient-info mr-2 clickReback">返回</button>
+                            {%if d.summarize%}<p>{{d.summarize|safe}}</p>{%endif%}
+                        </div>
+                        <div id="sourceHtml" class="d-none">
+                            <div class="row">
+                                <div class="col-sm-1">
+                                    <button class="btn btn-gradient-danger btn-xs mt-2 deleteItem" type="button">删除
+                                    </button>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group row">
+                                        <div class="col-sm-12">
+                                            <select class="form-control" name="planLevel">
+                                                {% for o in levels.keys()%}
+                                                <option value="{{o}}">{{levels[o]}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <div class="form-group row">
+                                        <div class="col-sm-12">
+                                            <input class="form-control" placeholder="任务标题" name="planTitle">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group row">
+                                        <div class="col-sm-12">
+                                            <select class="form-control" name="isDone">
+                                                <option value="n">未完成</option>
+                                                <option value="y">已完成</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <h4 class="card-title">所属周计划任务列表</h4>
+                        <p class="card-description" id="parentPlanTitle">{{d.weeklyPlan.title}}</p>
+                        <ul class="list-unstyled" id="parentPlanJobs">
+                            {%for i in d.weeklyPlan.plans%}
+                            <li>
+                                {% if i.level == 'L1' %}
+                                <label class="alert alert-danger">紧急重要：{{i.title}} {%if i.isDone%}<i
+                                        class="mdi mdi-check"></i>{%endif%}</label>
+                                {% elif i.level == 'L2' %}
+                                <label class="alert alert-warning">紧急不重要：{{i.title}} {%if i.isDone%}<i
+                                        class="mdi mdi-check"></i>{%endif%}</label>
+                                {% elif i.level == 'L3' %}
+                                <label class="alert alert-info">重要不紧急：{{i.title}} {%if i.isDone%}<i
+                                        class="mdi mdi-check"></i>{%endif%}</label>
+                                {% else %}
+                                <label class="alert alert-success">不重要不紧急：{{i.title}} {%if i.isDone%}<i
+                                        class="mdi mdi-check"></i>{%endif%}</label>
+                                {% endif %}
+                            </li>
+                            {%endfor%}
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block customJs %}
+    <script src="{{url_for('static',filename='extension/laydate/laydate.js')}}"></script>
+    <script>
+        $(document).ready(function () {
+            $("select[name='weeklyPlanId']").on('change', function () {
+                parentPlanId = $(this).val()
+                postUrl = "{{url_for('admin.timeManagementGetParentPlans')}}"
+                $.ajax({
+                    type: "POST",
+                    url: postUrl,
+                    data: {
+                        'id': parentPlanId,
+                        'planType': 'wp',
+                    },
+                    success: function (ret) {
+                        if (ret.status) {
+                            $("#parentPlanTitle").text(ret.data.parentPlanTitle)
+                            $("#parentPlanJobs").html(ret.data.parentPlanJobs)
+                        }
+                    }
+                });
+            });
+            $("#postDataBtn").on("click", function () {
+                var tempThis = $(this)
+                tempThis.addClass('d-none')
+                weeklyPlanId = $("select[name='weeklyPlanId']").val()
+                whichDay = $("input[name='whichDay']").val()
+                planLevel = []
+                $("#allAddHtml select[name='planLevel']").each(function () {
+                    planLevel.push($(this).val())
+                });
+                planTitle = []
+                $("#allAddHtml input[name='planTitle']").each(function () {
+                    planTitle.push($(this).val())
+                });
+                isDone = []
+                $("#allAddHtml select[name='isDone']").each(function () {
+                    isDone.push($(this).val())
+                });
+                postUrl = "{{ url_for('admin.timeManagementDailyPlanEdit',id=d.id) }}"
+                $.ajax({
+                    type: "POST",
+                    url: postUrl,
+                    data: {
+                        'weeklyPlanId': weeklyPlanId,
+                        'whichDay': whichDay,
+                        'planLevel': planLevel,
+                        'planTitle': planTitle,
+                        'isDone': isDone
+                    },
+                    success: function (ret) { //ret={'status':true,'info':'.....'}
+                        if (ret.status) {
+                            window.location.href = "{{ url_for('admin.timeManagementBoard',planType='dp',id=d.id) }}";
+                        } else {
+                            alert(ret.info)
+                            tempThis.removeClass('d-none')
+                        }
+                    }
+                });
+            });
+
+            var html = $("#sourceHtml").html();
+            $("#addItem").on('click', function () {
+                $("#addHtml").append(html);
+                //为新添加的内容初始化
+                lay('.timePicker').each(function () {
+                    laydate.render({
+                        elem: this
+                        , trigger: 'click'
+                        , type: 'time'
+                        , range: true
+                    });
+                });
+            });
+            $(document).on('click', '.deleteItem', function (e) {
+                //$(".deleteItem").on('click', function () {
+                $(this).parent().parent().remove();
+            });
+            $(".clickReback").on("click", function () {
+                history.go(-1)
+            })
+            //日期选择
+            lay('.timePicker-date').each(function () {
+                laydate.render({
+                    elem: this
+                    , trigger: 'click'
+                });
+            });
+        });
+    </script>
+    {% endblock %}

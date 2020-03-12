@@ -1,0 +1,99 @@
+{% extends 'theme/default/_base.html' %}
+
+{% block title %}导航-{{custom['webName']}}{% endblock %}
+
+{% block customCss %}
+<style>
+    .bradcam_area{
+        background-image: url('{{current_user.getRandomImage()}}');
+    }
+    .navigation_area {
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+    .web-item:hover{
+        background-color: #ecebed;
+    }
+    .web-item img{
+        float: left;
+        width: 30px;
+        margin-right: 10px;
+    }
+    .web-item p{
+        font-size: 12px;
+        line-height: 15px;
+        margin-left: 40px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="bradcam_area">
+    <h3>导航</h3>
+</div>
+
+<div class="navigation_area">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 mt-4 pt-4 d-none d-md-block d-lg-block d-xl-block">
+                <div class="list-group" id="list-navigation">
+                    {%for n in ns%}
+                    <a class="list-group-item list-group-item-action" href="#list-item-{{loop.index}}">{{n.column}}</a>
+                    {%endfor%}
+                </div>
+            </div>
+            <div class="col-md-10 col-sm-12 mt-4" data-spy="scroll" data-target="#list-navigation">
+                {%for n in ns%}
+                <div class="navigation-item" id="list-item-{{loop.index}}" style="padding-top: 60px;margin-top: -50px">
+                    <div class="m-3">
+                        <h4>
+                            {{n.column}}
+                        </h4>
+                        <hr>
+                        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6">
+                            {%for w in n.webs%}
+                            {%set cover=w.icon%}
+                            {%if not w.icon%}{%set cover='local/images/webIconDefault.png'%}{%endif%}
+                            <div class="col pb-3 pt-3 web-item">
+                                <a href="{{w.url}}" target="_blank" title="{{w.introduction}}">
+                                    <img src="{{url_for('static',filename=cover)}}" class="rounded-circle">
+                                    <h6>{{w.webName}}</h6>
+                                    {%if w.introduction%}
+                                    <p>{{w.introduction|truncate(30, killwords=True, leeway=0)}}</p>
+                                    {%endif%}
+                                </a>
+                            </div>
+                            {%endfor%}
+                        </div>
+                    </div>
+                </div>
+                {%endfor%}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script type="text/javascript">
+$('body').scrollspy({ target: '#list-navigation' })
+$(function(){
+        //获取要定位元素距离浏览器顶部的距离
+        var navH = $("#list-navigation").offset().top;
+        // console.log(navH);
+        //滚动条事件
+        $(window).scroll(function(){
+            //获取滚动条的滑动距离
+            var scroH = $(this).scrollTop();
+            // console.log(scroH);
+            //滚动条的滑动距离大于等于定位元素距离浏览器顶部的距离，就固定，反之就不固定
+            if(scroH>=navH){
+                $("#list-navigation").css({"position":"sticky","top":85});
+            }else if(scroH<navH){
+                $("#list-navigation").css({"position":"static"});
+            }
+         })
+    });
+
+</script>
+{% endblock %}

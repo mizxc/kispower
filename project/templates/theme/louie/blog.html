@@ -1,0 +1,144 @@
+{% extends 'theme/louie/_base.html' %}
+
+{% block title %}博客-{{custom['webName']}}{% endblock %}
+
+{% block content %}
+<section class="ftco-section ftco-bread">
+    <div class="container">
+        <div class="row no-gutters slider-text justify-content-center align-items-center">
+            <div class="col-md-8 ftco-animate">
+                <p class="breadcrumbs"><span class="mr-2"><a href="/">Home</a></span> <span>Blog</span></p>
+                <h1 class="bread">My Blog</h1>
+                {%if c%}
+                <p class="breadcrumbs mt-2"><span class="mr-2">{{c.title}}</span></p>
+                {%endif%}
+                {%if tag%}
+                <p class="breadcrumbs mt-2"><span class="mr-2">{{tag}}</span></p>
+                {%endif%}
+                {%if search%}
+                <p class="breadcrumbs mt-2"><span class="mr-2">{{search}}</span></p>
+                {%endif%}
+            </div>
+        </div>
+    </div>
+</section>
+<section class="ftco-section">
+    <div class="container">
+        <div class="row d-flex">
+            <div class="col-lg-8">
+                <div class="row">
+                    {%for p in ps%}
+                    <div class="col-md-12">
+                        <div class="blog-entry ftco-animate d-md-flex">
+                            {%if not p.cover%}
+                            <a href="{{url_for('home.blogShow',id=p.id)}}" class="img img-2"
+                               style="background-image: url({{current_user.getRandomImage()}});"></a>
+                            {%else%}
+                            <a href="{{url_for('home.blogShow',id=p.id)}}" class="img img-2"
+                               style="background-image: url({{p.cover}});"></a>
+                            {%endif%}
+                            <div class="text text-2 p-4">
+                                <h3 class="mb-2"><a href="{{url_for('home.blogShow',id=p.id)}}">{{p.title}}</a></h3>
+                                <div class="meta-wrap">
+                                    <p class="meta">
+                                        <span>{{p.writeTime}}</span>
+                                        <span><a href="{{url_for('home.blogColumn',columnId=p.column.id)}}">{{p.column.title}}</a></span>
+                                    </p>
+                                </div>
+                                <p class="mb-4">{{p.lead|truncate(50, killwords=True, leeway=0)}}</p>
+                                <p><a href="{{url_for('home.blogShow',id=p.id)}}" class="btn-custom">Read More <span
+                                        class="ion-ios-arrow-forward"></span></a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {%endfor%}
+                </div><!-- END-->
+                <div class="row">
+                    <div class="col">
+                        <div class="block-27">
+                            <ul>
+                                {%if page>0%}
+                                {%if c%}
+                                <li><a href="{{url_for('home.blogColumn',columnId=c.id,page=page-1)}}">&lt;</a></li>
+                                {%elif tag%}
+                                <li><a href="{{url_for('home.blogTag',tag=tag,page=page-1)}}">&lt;</a></li>
+                                {%elif search%}
+                                <li><a href="{{url_for('home.blogSearch',search=search,page=page-1)}}">&lt;</a></li>
+                                {%else%}
+                                <li><a href="{{url_for('home.blog',page=page-1)}}">&lt;</a></li>
+                                {%endif%}
+                                {%endif%}
+                                {%if ps.count()>(page+1)*10%}
+                                {%if c%}
+                                <li><a href="{{url_for('home.blogColumn',columnId=c.id,page=page+1)}}">&gt;</a></li>
+                                {%elif tag%}
+                                <li><a href="{{url_for('home.blogTag',tag=tag,page=page+1)}}">&gt;</a></li>
+                                {%elif search%}
+                                <li><a href="{{url_for('home.blogSearch',search=search,page=page+1)}}">&gt;</a></li>
+                                {%else%}
+                                <li><a href="{{url_for('home.blog',page=page+1)}}">&gt;</a></li>
+                                {%endif%}
+                                {%endif%}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 sidebar ftco-animate bg-light">
+                <div class="sidebar-box">
+                    <form class="search-form" action="{{url_for('home.blogSearch')}}" method="post">
+                        <div class="form-group">
+                            <span class="icon icon-search"></span>
+                            <input type="text" class="form-control" placeholder="search" name="search">
+                        </div>
+                    </form>
+                </div>
+                <div class="sidebar-box ftco-animate">
+                    <h3 class="sidebar-heading">Categories</h3>
+                    <ul class="categories">
+                        {%for item in current_user.getBlogColumn()%}
+                        <li><a href="{{url_for('home.blogColumn',columnId=item.id)}}">{{item.title}} <span>({{item.postCount}})</span></a>
+                        </li>
+                        {%endfor%}
+                    </ul>
+                </div>
+
+                <div class="sidebar-box ftco-animate">
+                    <h3 class="sidebar-heading">Popular Articles</h3>
+                    {%for p in current_user.getHotPost()%}
+                    <div class="block-21 mb-4 d-flex">
+                        {%if not p.cover%}
+                            <a class="blog-img mr-4" style="background-image: url({{current_user.getRandomImage()}});"></a>
+                        {%else%}
+                            <a class="blog-img mr-4" style="background-image: url({{p.cover}});"></a>
+                        {%endif%}
+                        <div class="text">
+                            <h3 class="heading"><a href="{{url_for('home.blogShow',id=p.id)}}">{{p.title}}</a></h3>
+                            <div class="meta">
+                                <div><a href="#"><span class="icon-calendar"></span> {{p.writeTime}}</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    {%endfor%}
+                </div>
+
+                <div class="sidebar-box ftco-animate">
+                    <h3 class="sidebar-heading">Tag Cloud</h3>
+                    <ul class="tagcloud">
+                        {%for t,count in custom['tags'].items()%}
+                        <a href="{{url_for('home.blogTag',tag=t)}}" class="tag-cloud-link">{{t}}({{count}})</a>
+                        {%endfor%}
+                    </ul>
+                </div>
+
+                <div class="sidebar-box ftco-animate">
+                    <h3 class="sidebar-heading">Paragraph</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus itaque, autem necessitatibus
+                        voluptate quod mollitia delectus aut.</p>
+                </div>
+            </div><!-- END COL -->
+        </div>
+    </div>
+</section>
+{% endblock %}

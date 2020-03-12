@@ -1,0 +1,60 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}手册&版本&备份-管理后台{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Kispower豆瓣交流小组</h4>
+                <p>
+                    点击去小组交流：
+                    <a href="https://www.douban.com/group/685019/" class="btn btn-sm btn-success" target="_blank">Kispower小组</a>
+                </p>
+            </div>
+        </div>
+        <hr>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">系统操作指南</h4>
+                <p>
+                    点击查看使用手册：
+                    <a href="{{guide}}" class="btn btn-sm btn-success" target="_blank">使用指南</a>
+                </p>
+            </div>
+        </div>
+        <hr>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">当前版本：{{version}}</h4>
+                <p>
+                    点击查看最新版本：
+                    <a href="{{versionUrl}}" class="btn btn-sm btn-success" target="_blank">最新版本</a>
+                </p>
+            </div>
+        </div>
+        <hr>
+        <div class="card">
+            <div class="card-body">
+                {%if backupFiles%}
+                <h4>可下载的备份文件：</h4>
+                {%for f in backupFiles%}
+                <p>
+                    <a href="{{url_for('admin.backupFileDownload',fileName=f.replace('.zip',''))}}" class="btn btn-sm btn-success" target="_blank">{{f}}</a>
+                </p>
+                {%endfor%}
+                {%else%}
+                <p>
+                    当前还没有备份文件，每天凌晨24点会准时备份数据文件
+                </p>
+                {%endif%}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

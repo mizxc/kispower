@@ -1,0 +1,20 @@
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link type="text/css" rel="stylesheet" href="{{url_for('static',filename='extension/jsmind/jsmind.css')}}"/>
+    <link rel="stylesheet" href="{{url_for('static',filename='extension/purpleAdmin/vendors/mdi/css/materialdesignicons.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='extension/purpleAdmin/vendors/css/vendor.bundle.base.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='extension/jsmind/style.css')}}">
+    <link rel="shortcut icon" href="{{url_for('static',filename='local/images/favicon.png')}}"/>
+    {% block customCss %}{% endblock %}
+</head>
+<body>
+{% block content %}{% endblock %}
+<script src="{{url_for('static',filename='extension/purpleAdmin/vendors/js/vendor.bundle.base.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='extension/jsmind/jsmind.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='extension/jsmind/jsmind.screenshot.js')}}"></script>
+{% block customJs %}{% endblock %}
+</body>
+</html>

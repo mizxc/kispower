@@ -1,0 +1,82 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}博客管理-后台管理{% endblock %}
+{% block customCss %}
+<link rel="stylesheet" href="{{url_for('static',filename='extension/dataTable/dataTables.bootstrap4.min.css')}}">
+{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">"{{c.title}}" 文章列表</h4>
+                <p class="card-description">
+                    <a class="btn btn-xs btn-gradient-success mr-2" href="{{url_for('admin.blogPostAdd',id=c.id)}}">添加文章</a>
+                    <a class="btn btn-xs btn-gradient-info mr-2" href="{{url_for('admin.blogColumn')}}">返回专栏管理</a>
+                </p>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>标题</th>
+                            <th>Tags</th>
+                            <th>写作时间</th>
+                            <th>浏览量</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for p in ps%}
+                        <tr>
+                            <td>
+                                {{loop.index}}
+                            </td>
+                            <td {%if p.isTop%}class="text-danger"{%endif%}>{{p.title}}</td>
+                            <td>{%for t in p.tags%}{{t}}{%endfor%}</td>
+                            <td>{{p.writeTime}}</td>
+                            <td>{{p.pv}}</td>
+                            <td>
+                                <button class="btn btn-gradient-danger btn-xs objDelete" type="button"
+                                        deleteUrl="{{ url_for('admin.blogPostDelete',id=p.id) }}">
+                                    删除
+                                </button>
+                                <a class="btn btn-gradient-info btn-xs" href="{{ url_for('admin.blogPostEdit',id=p.id) }}">修改</a>
+                                {%if p.isTop%}
+                                    <a class="btn btn-gradient-success btn-xs" href="{{ url_for('admin.blogPostIsTop',id=p.id,isTop='n') }}">取消置顶</a>
+                                {%else%}
+                                    <a class="btn btn-gradient-info btn-xs" href="{{ url_for('admin.blogPostIsTop',id=p.id,isTop='y') }}">置顶</a>
+                                {%endif%}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script src="{{url_for('static',filename='extension/dataTable/jquery.dataTables.min.js')}}"></script>
+<script src="{{url_for('static',filename='extension/dataTable/dataTables.bootstrap4.min.js')}}"></script>
+<script>
+    $(document).ready(function () {
+        $(".objDelete").on('click', function () {
+            var deleteUrl = $(this).attr('deleteUrl')
+            if (confirm('确定要删除该文章吗?') == true) {
+                $(window).attr('location', deleteUrl);
+            }
+        });
+        $('.table').DataTable();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'theme/lifeleck/_base.html' %}
+
+{% block title %}about-{{custom['webName']}}{% endblock %}
+
+{% block customCss %}
+<style>
+    #section-backgroud {
+        background-image: url({{current_user.getRandomImage()}});
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="breadcrumb align-items-center" id="section-backgroud">
+    <div class="container">
+        <div class="row align-items-center justify-content-between">
+            <div class="col-sm-8">
+                <div class="breadcrumb_tittle text-left">
+                    <h2>About</h2>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="breadcrumb_content text-right">
+                    <p>Home<span>/</span>About</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="contact-section section_padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                {{custom['aboutMe']|safe}}
+                <div>
+                    <!--PC和WAP自适应版-->
+                    <div id="SOHUCS" sid="about"></div>
+                    {%if custom['commentCode']%}
+                    {{custom['commentCode']|safe}}
+                    {%endif%}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

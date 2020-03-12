@@ -1,0 +1,174 @@
+{% extends 'theme/lifeleck/_base.html' %}
+
+{% block title %}{{p.title}}-{{custom['webName']}}{% endblock %}
+
+{% block customCss %}
+<style>
+    #blog-content img{
+        height: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="all_post section_padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 posts-list">
+                <div class="single-post">
+                    <div class="blog_details">
+                        <h1  style="margin-top: -60px;">{{p.title}}</h1>
+                        <ul class="blog-info-link mt-3 mb-4">
+                            <li><i class="fa fa-user"></i> {{custom['userName']}}</li>
+                            <li>
+                                <i class="fa fa-circle"></i><a
+                                    href="{{url_for('home.blogColumn',columnId=p.column.id)}}">{{p.column.title}}</a>
+                            </li>
+                            <li class="d-none d-md-block d-lg-block d-xl-block"><i class="fa fa-tags"></i>
+                                {%for t in p.tags%}
+                                <a href="{{url_for('home.blogTag',tag=t)}}">{{t}}</a>
+                                {%endfor%}
+                            </li>
+                            <li><i class="fa fa-clock-o"></i>{{p.writeTime}}</li>
+                            <li class="d-none d-md-block d-lg-block d-xl-block"><i class="fa fa-eye"></i>{{p.pv}}</li>
+                        </ul>
+                        <div id="blog-content">
+                            {%if p.video%}
+                                <div class="text-center">
+                                    {{p.video|safe}}
+                                </div>
+                            {%endif%}
+                            {{p.content|safe}}
+                        </div>
+                    </div>
+                </div>
+                <div class="navigation-top">
+                    <div class="navigation-area mt-5">
+                        <div class="row">
+                            {% set prevAndNextPost = current_user.getPrevAndNextPost(p.id) %}
+                            {%if prevAndNextPost[0]%}
+                            {% set prev = prevAndNextPost[0] %}
+                            <div class="col-lg-6 col-md-6 col-12 nav-left flex-row d-flex justify-content-start align-items-center">
+                                {%if prev.cover%}
+                                <div class="thumb">
+                                    <a href="{{url_for('home.blogShow',id=prev.id)}}">
+                                        <img class="img-fluid" src="{{prev.cover}}" alt="" width="100px">
+                                    </a>
+                                </div>
+                                {%endif%}
+                                <div class="arrow">
+                                    <a href="{{url_for('home.blogShow',id=prev.id)}}">
+                                        <span class="text-white ti-arrow-left"></span>
+                                    </a>
+                                </div>
+                                <div class="detials">
+                                    <p>Prev Post</p>
+                                    <a href="{{url_for('home.blogShow',id=prev.id)}}">
+                                        <h4>{{prev.title}}</h4>
+                                    </a>
+                                </div>
+                            </div>
+                            {%endif%}
+                            {%if prevAndNextPost[1]%}
+                            {% set next = prevAndNextPost[1] %}
+                            <div class="col-lg-6 col-md-6 col-12 nav-right flex-row d-flex justify-content-end align-items-center">
+                                <div class="detials">
+                                    <p>Next Post</p>
+                                    <a href="{{url_for('home.blogShow',id=next.id)}}">
+                                        <h4>{{next.title}}</h4>
+                                    </a>
+                                </div>
+                                <div class="arrow">
+                                    <a href="{{url_for('home.blogShow',id=next.id)}}">
+                                        <span class="text-white ti-arrow-right"></span>
+                                    </a>
+                                </div>
+                                {%if next.cover%}
+                                <div class="thumb">
+                                    <a href="{{url_for('home.blogShow',id=next.id)}}">
+                                        <img class="img-fluid" src="{{next.cover}}" alt="" width="100px">
+                                    </a>
+                                </div>
+                                {%endif%}
+                            </div>
+                            {%endif%}
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <!--PC和WAP自适应版-->
+                    <div id="SOHUCS" sid="post-{{p.id}}"></div>
+                    {%if custom['commentCode']%}
+                    {{custom['commentCode']|safe}}
+                    {%endif%}
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="sidebar_widget">
+                    <div class="single_sidebar_wiget search_form_widget">
+                        <div class="sidebar_tittle">
+                            <h3>Blog</h3>
+                        </div>
+                        <form action="{{url_for('home.blogSearch')}}" method="post">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search Keyword" name="search">
+                                <button type="submit" class="btn_1" style="width: 100%">search</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="single_sidebar_wiget">
+                        <div class="sidebar_tittle">
+                            <h3>Categories</h3>
+                        </div>
+                        <div class="single_catagory_item category">
+                            <ul class="list-unstyled">
+
+                                {%for item in current_user.getBlogColumn()%}
+                                <li><a href="{{url_for('home.blogColumn',columnId=item.id)}}">{{item.title}}</a> <span>({{item.postCount}})</span>
+                                </li>
+                                {%endfor%}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="single_sidebar_wiget">
+                        <div class="sidebar_tittle">
+                            <h3>Tag Clouds</h3>
+                        </div>
+                        <div class="social_share_icon tags">
+                            <ul class="list-unstyled">
+                                {%for t,count in custom['tags'].items()%}
+                                <li><a href="{{url_for('home.blogTag',tag=t)}}">{{t}}({{count}})</a></li>
+                                {%endfor%}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="single_sidebar_wiget">
+                        <div class="sidebar_tittle">
+                            <h3>Hot Post</h3>
+                        </div>
+                        {%for p in current_user.getHotPost()%}
+                        <div class="single_catagory_post post_2 ">
+                            {%if p.cover%}
+                            <div class="category_post_img">
+                                <img src="{{p.cover}}" alt="">
+                            </div>
+                            {%else%}
+                            <div class="category_post_img">
+                                <img src="{{current_user.getRandomImage()}}" alt="">
+                            </div>
+                            {%endif%}
+                            <div class="post_text_1 pr_30">
+                                <a href="single-blog.html">
+                                    <h3>{{p.title}}</h3>
+                                </a>
+                                <p><span>{{p.writeTime}}</span></p>
+                            </div>
+                        </div>
+                        {%endfor%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}博客管理-后台管理{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+<style>
+    .simditor .simditor-body {
+        overflow-y: scroll !important;
+        min-height: 600px !important;
+        max-height: 600px !important;
+    }
+</style>
+{% endblock %}
+
+{% block customCss %}
+<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='extension/simditor/simditor.css')}}" />
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">写文章</h4>
+                <p class="card-description">
+                    该篇文章会发布到专栏：
+                    <a href="{{ url_for('admin.blogColumnManage',id=c.id) }}">{{c.title}}</a>
+                </p>
+                <form class="forms-sample">
+                    <div class="form-group">
+                        <label for="exampleInputName1"><i class="mdi mdi-multiplication text-danger"></i>标题</label>
+                        <input type="text" class="form-control" name="title">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputName1"><i class="mdi mdi-multiplication text-danger"></i>标签（以空格分割）</label>
+                        <p>
+                            {% for tag,number in current_user.custom['tags'].items()%}
+                                <button type="button" class="btn btn-xs btn-success mb-1 btnSelectTag" tag="{{tag}}">{{tag}}({{number}})</button>
+                            {%endfor%}
+                        </p>
+                        <input type="text" class="form-control" name="tags">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputName1">视频嵌入代码（优酷、爱奇艺、腾讯视频、bilibili...）</label>
+                        <input type="text" class="form-control" name="video">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleTextarea1"><i class="mdi mdi-multiplication text-danger"></i>内容</label>
+                        <textarea class="form-control" rows="60" name="content" id="editor"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-gradient-success mr-2" id="postDataBtn">提交</button>
+                    <button type="button" class="btn btn-gradient-info mr-2 clickReback">返回</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+{% block customJs %}
+<script type="text/javascript" src="{{url_for('static',filename='extension/simditor/module.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='extension/simditor/hotkeys.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='extension/simditor/uploader.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='extension/simditor/simditor.js')}}"></script>
+<script>
+    $(document).ready(function () {
+        $(".btnSelectTag").on("click", function () {
+            var tag = ' '+$(this).attr('tag')
+            var tags = $("input[name='tags']").val()
+            $("input[name='tags']").val(tags+tag)
+        })
+        $(".clickReback").on("click", function () {
+            history.go(-1)
+        });
+        var editor = new Simditor({
+            textarea: $('#editor'),
+            //optional options
+            //placeholder: '这里输入文字...',
+            toolbar:  ['title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'hr', '|', 'indent', 'outdent', 'alignment'], //工具条都包含哪些内容
+            defaultImage: '/static/local/images/editorImage.jpg',//编辑器插入的默认图片，此处可以删除
+        });
+
+        $("#postDataBtn").on("click", function () {
+            var tempThis = $(this)
+            tempThis.addClass('d-none')
+            title = $("input[name='title']").val()
+            tags = $("input[name='tags']").val()
+            video = $("input[name='video']").val()
+            content = $("textarea[name='content']").val()
+            postUrl="{{ url_for('admin.blogPostAdd',id=c.id) }}"
+            $.ajax({
+                type: "POST",
+                url: postUrl,
+                data:{'title':title,'tags':tags,'video':video,'content':content},
+                success: function (ret) { //ret={'status':true,'info':'.....'}
+                    alert(ret.info)
+                    if (ret.status){
+                        window.location.href = "{{ url_for('admin.blogColumnManage',id=c.id) }}";
+                    }
+                    tempThis.removeClass('d-none')
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

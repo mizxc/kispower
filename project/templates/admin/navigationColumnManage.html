@@ -1,0 +1,117 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}导航管理-后台管理{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-4 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">添加网站到 "{{n.column}}" 栏目</h4>
+                <p class="card-description">输入网站信息</p>
+                <form class="forms-sample" action="{{ url_for('admin.navigationWebAdd',id=n.id) }}"
+                      enctype="multipart/form-data" method='post'>
+                    <div class="form-group">
+                        <label for="exampleInputName1"><i class="mdi mdi-multiplication text-danger"></i>网站名称</label>
+                        <input type="text" class="form-control" id="exampleInputName1" name="webName">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputName1"><i class="mdi mdi-multiplication text-danger"></i>网站url（url开头请带上http://或者https://）</label>
+                        <input type="text" class="form-control" id="exampleInputName1" name="url">
+                    </div>
+                    <div class="form-group">
+                        <label>上传网站图标</label>
+                        <input type="file" name="img" class="file-upload-default">
+                        <div class="input-group col-xs-12">
+                            <input type="text" class="form-control file-upload-info" disabled
+                                   placeholder="Upload Image">
+                            <span class="input-group-append">
+                            <button class="file-upload-browse btn btn-gradient-light" type="button">选择文件</button>
+                          </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleTextarea1">网站介绍</label>
+                        <textarea class="form-control" id="exampleTextarea1" rows="6" name="introduction"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-gradient-success mr-2">提交</button>
+                    <a class="btn btn-gradient-info mr-2" href="{{ url_for('admin.navigationColumn') }}">返回栏目管理</a>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">"{{n.column}}" 网站列表</h4>
+                <p class="card-description"> 可排序 </p>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>网站名称</th>
+                            <th>图标</th>
+                            <th>URL</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for w in n.webs%}
+                        <tr>
+                            <td>
+                                {{loop.index}}
+                            </td>
+                            <td>{{w.webName}}</td>
+                            <td>
+                                {% if w.icon %}
+                                <img class="img-ss rounded-circle mr-3" alt="image"
+                                     src="{{url_for('static',filename=w.icon)}}">
+                                {% endif %}
+                            </td>
+                            <td><a href="{{w.url}}" target="_blank">{{w.url|truncate(30, killwords=True, leeway=0)}}</a></td>
+                            <td>
+                                <button class="btn btn-gradient-danger btn-xs objDelete" type="button"
+                                        deleteUrl="{{ url_for('admin.navigationWebDelete',id=n.id,number=loop.index-1) }}">
+                                    删除
+                                </button>
+                                <a class="btn btn-gradient-info btn-xs"
+                                   href="{{ url_for('admin.navigationWebEdit',id=n.id,number=loop.index-1) }}">修改</a>
+                                {% if loop.index!=1%}
+                                <a class="btn btn-gradient-success btn-xs"
+                                   href="{{ url_for('admin.navigationWebNumberChange',id=n.id,number=loop.index-1,direction='up') }}">上移</a>
+                                {% endif %}
+                                {% if loop.index!=n.webs|length%}
+                                <a class="btn btn-gradient-info btn-xs"
+                                   href="{{ url_for('admin.navigationWebNumberChange',id=n.id,number=loop.index-1,direction='down') }}">下移</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script src="{{url_for('static',filename='extension/purpleAdmin/js/file-upload.js')}}"></script>
+<script>
+    $(document).ready(function () {
+        $(".objDelete").on('click', function () {
+            var deleteUrl = $(this).attr('deleteUrl')
+            if (confirm('确定要删除该网站吗?') == true) {
+                $(window).attr('location', deleteUrl);
+            }
+        });
+    });
+</script>
+{% endblock %}

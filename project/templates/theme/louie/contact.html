@@ -1,0 +1,69 @@
+{% extends 'theme/louie/_base.html' %}
+
+{% block title %}contact-{{custom['webName']}}{% endblock %}
+
+{% block content %}
+<section class="ftco-section ftco-bread">
+    <div class="container">
+        <div class="row no-gutters slider-text justify-content-center align-items-center">
+            <div class="col-md-8 ftco-animate fadeInUp ftco-animated">
+                <p class="breadcrumbs"><span class="mr-2"><a href="/">Home</a></span> <span>Contact</span></p>
+                <h1 class="bread">Contact</h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section contact-section">
+    <div class="container">
+        <div class="row block-9">
+            <div class="col-md-12 d-flex">
+                <div class="bg-light p-5 contact-form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Your Name" name="name">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Your Email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <textarea name="message" id="" cols="30" rows="7" class="form-control"
+                                  placeholder="Message"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Send Message" class="btn btn-primary py-3 px-5" id="postDataBtn">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block customJs %}
+<script>
+    $(document).ready(function () {
+        $("#postDataBtn").on("click", function () {
+            var tempThis = $(this)
+            tempThis.addClass('d-none')
+            var name = $("input[name='name']").val()
+            var email = $("input[name='email']").val()
+            var message = $("textarea[name='message']").val()
+            postUrl = "{{ url_for('home.contact') }}"
+            $.ajax({
+                type: "POST",
+                url: postUrl,
+                data: {'name': name, 'email': email, 'message': message},
+                success: function (ret) { //ret={'status':true,'info':'.....'}
+                    alert(ret.info)
+                    if (ret.status) {
+                        window.location.href = postUrl;
+                    }
+                    tempThis.removeClass('d-none')
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
+

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+    {%set custom=current_user.getCustom()%}
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="description" content="{{custom['webIntro']}}">
+    <meta name="keywords" content="{{custom['webKeywords']}}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon"
+          href="{{url_for('static',filename=custom['favicon'])}}">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/cassi/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/cassi/css/font-awesome.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/cassi/css/elegant-icons.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/cassi/css/owl.carousel.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/cassi/css/fresco.css')}}">
+    <!-- Main Stylesheets -->
+    <link rel="stylesheet" href="{{url_for('static',filename='theme/cassi/css/style.css')}}">
+    {% block customCss %}{% endblock %}
+    {%if custom['statisticalCode']%}
+    {{custom['statisticalCode']|safe}}
+    {%endif%}
+
+    <!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+</head>
+<body>
+<!-- Page Preloder -->
+<div id="preloder">
+    <div class="loader"></div>
+</div>
+
+<!-- Offcanvas Menu Section -->
+<div class="offcanvas-menu-wrapper">
+    <div class="menu-header">
+        <a href="/" class="site-logo">
+            <img src="{{url_for('static',filename=custom['logo'])}}" height="30px">
+        </a>
+        <div class="menu-switch" id="menu-canvas-close">
+            <i class="icon_close"></i>
+        </div>
+    </div>
+    <ul class="main-menu">
+        <li><a {%if mark=='index'%}class="active"{%endif%} href="/">首页</a></li>
+        <li><a {%if mark=='kshare'%}class="active"{%endif%} href="{{url_for('home.kshare')}}">知识</a></li>
+        <li><a {%if mark=='navigation'%}class="active"{%endif%} href="{{url_for('home.navigation')}}">导航</a></li>
+        <li><a {%if mark=='blog'%}class="active"{%endif%} href="{{url_for('home.blog')}}">博客</a></li>
+        <li><a {%if mark=='photo'%}class="active"{%endif%} href="{{url_for('home.photoAlbum')}}">相册 <i class="ti-angle-down"></i></a></li>
+        <li><a {%if mark=='about'%}class="active"{%endif%} href="{{url_for('home.about')}}">About</a></li>
+        <li><a {%if mark=='contact'%}class="active"{%endif%} href="{{url_for('home.contact')}}">Contact</a></li>
+    </ul>
+    <div class="menu-footer">
+        <div class="footer-social">
+            <a href="/">首页</a>
+            <a href="{{url_for('home.kshare')}}">知识</a>
+            <a href="{{url_for('home.navigation')}}">导航</a>
+            <a href="{{url_for('home.blog')}}">博客</a>
+            <a href="{{url_for('home.photoAlbum')}}">相册</a>
+            <a href="{{url_for('home.about')}}">About</a>
+            <a href="{{url_for('home.contact')}}">Contact</a>
+        </div>
+        <div class="copyright">
+            <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                {{custom['copyright']|safe}}
+                | Template by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                | Power by <a href="http://kispower.cn" target="_blank">Kispower</a>
+            </p>
+        </div>
+    </div>
+</div>
+<!-- Offcanvas Menu Section end -->
+
+<!-- Header section -->
+<header class="header-section">
+    <a href="/" class="site-logo">
+        <img src="{{url_for('static',filename=custom['logo'])}}" height="30px">
+    </a>
+    <div class="menu-switch" id="menu-canvas-show">
+        <i class="icon_menu"></i>
+    </div>
+</header>
+<!-- Header section end -->
+
+{% block content %}
+{% endblock %}
+
+<!-- Footer section -->
+<footer class="footer-section">
+    <div class="footer-social">
+        <a href="/">首页</a>
+        <a href="{{url_for('home.kshare')}}">知识</a>
+        <a href="{{url_for('home.navigation')}}">导航</a>
+        <a href="{{url_for('home.blog')}}">博客</a>
+        <a href="{{url_for('home.photoAlbum')}}">相册</a>
+        <a href="{{url_for('home.about')}}">About</a>
+        <a href="{{url_for('home.contact')}}">Contact</a>
+    </div>
+    <div class="copyright">
+        <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            {{custom['copyright']|safe}}
+            | Template by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+            | Power by <a href="http://kispower.cn" target="_blank">Kispower</a>
+        </p>
+    </div>
+</footer>
+<!-- Footer section end -->
+
+<!--====== Javascripts & Jquery ======-->
+<script src="{{url_for('static',filename='theme/cassi/js/jquery-3.2.1.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/cassi/js/bootstrap.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/cassi/js/owl.carousel.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/cassi/js/masonry.pkgd.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/cassi/js/fresco.min.js')}}"></script>
+<script src="{{url_for('static',filename='theme/cassi/js/main.js')}}"></script>
+{% block customJs %}{% endblock %}
+</body>
+</html>

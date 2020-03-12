@@ -1,0 +1,64 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}修改网站信息-导航设置-管理后台{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">修改网站信息 "{{w.webName}}"</h4>
+                <p class="card-description">编辑网站信息</p>
+                <form class="forms-sample" action="{{ url_for('admin.navigationWebEdit',id=n.id,number=number) }}" enctype="multipart/form-data" method='post'>
+                    <div class="form-group">
+                        <label for="exampleInputName1"><i class="mdi mdi-multiplication text-danger"></i>网站名称</label>
+                        <input type="text" class="form-control" id="exampleInputName1" name="webName" value="{{w.webName}}">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputName1"><i class="mdi mdi-multiplication text-danger"></i>网站url</label>
+                        <input type="text" class="form-control" id="exampleInputName1" name="url" value="{{w.url}}">
+                    </div>
+                    <div class="form-group">
+                        <label>上传网站图标</label>
+                        {% if w.icon %}
+                        <p>
+                            <img class="img-sm rounded-circle mr-3" alt="image" src="{{url_for('static',filename=w.icon)}}">
+                        </p>
+                        {% endif %}
+                        <input type="file" name="img" class="file-upload-default">
+                        <div class="input-group col-xs-12">
+                            <input type="text" class="form-control file-upload-info" disabled
+                                   placeholder="Upload Image">
+                            <span class="input-group-append">
+                            <button class="file-upload-browse btn btn-gradient-primary" type="button">选择文件</button>
+                          </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleTextarea1">网站介绍</label>
+                        <textarea class="form-control" id="exampleTextarea1" rows="6" name="introduction">{% if w.introduction %}{{w.introduction}}{% endif %}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-gradient-primary mr-2">提交</button>
+                    <button type="button" class="btn btn-gradient-primary mr-2 clickReback">返回</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script src="{{url_for('static',filename='extension/purpleAdmin/js/file-upload.js')}}"></script>
+<script>
+    $(document).ready(function () {
+        $(".clickReback").on("click", function () {
+            history.go(-1)
+        })
+
+    });
+</script>
+{% endblock %}

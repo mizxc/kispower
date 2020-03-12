@@ -1,0 +1,299 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}时间管理-后台管理{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+{% if not dp %}
+<div class="row">
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">今日计划看板</h4>
+                <p class="card-description">你还未添加今日的计划，请先去添加日计划</p>
+                <a class="btn btn-gradient-success btn-fw"
+                   href="{{ url_for('admin.timeManagementDailyPlan')}}">添加日计划</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">
+                    <a href="{{url_for('admin.timeManagementBoard',planType='dp',id=dp.id)}}">{{dp.title}} 看板</a>
+                </h4>
+                <p class="card-description">任务完成度：{{dp.doneCount}}/{{dp.plans|length}}</p>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>级别</th>
+                            <th>任务</th>
+                            <th>是否完成</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for p in dp.plans%}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td>
+                                {% if p.level == 'L1' %}
+                                <label class="badge badge-danger">紧急重要</label>
+                                {% elif p.level == 'L2' %}
+                                <label class="badge badge-warning">紧急不重要</label>
+                                {% elif p.level == 'L3' %}
+                                <label class="badge badge-info">重要不紧急</label>
+                                {% else %}
+                                <label class="badge badge-success">不重要不紧急</label>
+                                {% endif %}
+                            </td>
+                            <td>{{p.title}}</td>
+                            <td>
+                                <div class="form-check mt-0 mb-3">
+                                    <label class="form-check-label">
+                                        <input class="checkbox" type="checkbox" {% if p.isDone %}checked{% endif %}
+                                               objId="{{dp.id}}" objPlanType="dp" objNumber="{{loop.index-1}}">
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <hr>
+                <p>
+                    <a class="btn btn-gradient-info btn-sm"
+                       href="{{ url_for('admin.timeManagementDailyPlanEdit',id=dp.id) }}">修改任务</a>
+                    <a class="btn btn-sm btn-gradient-success"
+                       href="{{ url_for('admin.timeManagementWriteSummarize',planType='dp',id=dp.id) }}">日回顾</a>
+                </p>
+                <hr>
+                <p>
+                    {%if dp.summarize%}{{dp.summarize|safe}}{%endif%}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">
+                    <a href="{{url_for('admin.timeManagementBoard',planType='wp',id=dp.weeklyPlan.id)}}">所属周计划：{{dp.weeklyPlan.title}}
+                        看板</a>
+                </h4>
+                <p class="card-description">
+                    {{dp.weeklyPlan.startTime}} 至 {{dp.weeklyPlan.endTime}}<br>
+                    任务完成度：{{dp.weeklyPlan.doneCount}}/{{dp.weeklyPlan.plans|length}}
+                </p>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>级别</th>
+                            <th>任务</th>
+                            <th>是否完成</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for p in dp.weeklyPlan.plans%}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td>
+                                {% if p.level == 'L1' %}
+                                <label class="badge badge-danger">紧急重要</label>
+                                {% elif p.level == 'L2' %}
+                                <label class="badge badge-warning">紧急不重要</label>
+                                {% elif p.level == 'L3' %}
+                                <label class="badge badge-info">重要不紧急</label>
+                                {% else %}
+                                <label class="badge badge-success">不重要不紧急</label>
+                                {% endif %}
+                            </td>
+                            <td>{{p.title}}</td>
+                            <td>
+                                <div class="form-check mt-0 mb-3">
+                                    <label class="form-check-label">
+                                        <input class="checkbox" type="checkbox" {% if p.isDone %}checked{% endif %}
+                                               objId="{{dp.weeklyPlan.id}}" objPlanType="wp"
+                                               objNumber="{{loop.index-1}}">
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <hr>
+                <p>
+                    <a class="btn btn-gradient-info btn-sm"
+                       href="{{ url_for('admin.timeManagementWeeklyPlanEdit',id=dp.weeklyPlan.id) }}">修改任务</a>
+                    <a class="btn btn-sm btn-gradient-success"
+                       href="{{ url_for('admin.timeManagementWriteSummarize',planType='wp',id=dp.weeklyPlan.id) }}">周回顾</a>
+                </p>
+                <hr>
+                <p>
+                    {%if dp.weeklyPlan.summarize%}{{dp.weeklyPlan.summarize|safe}}{%endif%}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">
+                    <a href="{{url_for('admin.timeManagementBoard',planType='mp',id=dp.weeklyPlan.monthlyPlan.id)}}">
+                        所属月计划：{{dp.weeklyPlan.monthlyPlan.title}} 看板</a>
+                </h4>
+                <p class="card-description">
+                    {{dp.weeklyPlan.monthlyPlan.startTime}} 至 {{dp.weeklyPlan.monthlyPlan.endTime}}<br>
+                    任务完成度：{{dp.weeklyPlan.monthlyPlan.doneCount}}/{{dp.weeklyPlan.monthlyPlan.plans|length}}
+                </p>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>级别</th>
+                            <th>任务</th>
+                            <th>是否完成</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for p in dp.weeklyPlan.monthlyPlan.plans%}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td>
+                                {% if p.level == 'L1' %}
+                                <label class="badge badge-danger">紧急重要</label>
+                                {% elif p.level == 'L2' %}
+                                <label class="badge badge-warning">紧急不重要</label>
+                                {% elif p.level == 'L3' %}
+                                <label class="badge badge-info">重要不紧急</label>
+                                {% else %}
+                                <label class="badge badge-success">不重要不紧急</label>
+                                {% endif %}
+                            </td>
+                            <td>{{p.title}}</td>
+                            <td>
+                                <div class="form-check mt-0 mb-3">
+                                    <label class="form-check-label">
+                                        <input class="checkbox" type="checkbox" {% if p.isDone %}checked{% endif %}
+                                               objId="{{dp.weeklyPlan.monthlyPlan.id}}" objPlanType="mp"
+                                               objNumber="{{loop.index-1}}">
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <hr>
+                <p>
+                    <a class="btn btn-gradient-info btn-sm"
+                       href="{{ url_for('admin.timeManagementMonthlyPlanEdit',id=dp.weeklyPlan.monthlyPlan.id) }}">修改任务</a>
+                    <a class="btn btn-sm btn-gradient-success"
+                       href="{{ url_for('admin.timeManagementWriteSummarize',planType='mp',id=dp.weeklyPlan.monthlyPlan.id) }}">月回顾</a>
+                </p>
+                <hr>
+                <p>
+                    {%if dp.weeklyPlan.monthlyPlan.summarize%}{{dp.weeklyPlan.monthlyPlan.summarize|safe}}{%endif%}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">
+                    <a href="{{url_for('admin.timeManagementBoard',planType='yp',id=dp.weeklyPlan.monthlyPlan.yearlyPlan.id)}}">
+                        所属年计划：{{dp.weeklyPlan.monthlyPlan.yearlyPlan.title}} 看板</a>
+                </h4>
+                <p class="card-description">{{dp.weeklyPlan.monthlyPlan.yearlyPlan.startTime}} 至
+                    {{dp.weeklyPlan.monthlyPlan.yearlyPlan.endTime}}<br>
+                    任务完成度：{{dp.weeklyPlan.monthlyPlan.yearlyPlan.doneCount}}/{{dp.weeklyPlan.monthlyPlan.yearlyPlan.plans|length}}
+                </p>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>级别</th>
+                            <th>任务</th>
+                            <th>是否完成</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for p in dp.weeklyPlan.monthlyPlan.yearlyPlan.plans%}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td>
+                                {% if p.level == 'L1' %}
+                                <label class="badge badge-danger">紧急重要</label>
+                                {% elif p.level == 'L2' %}
+                                <label class="badge badge-warning">紧急不重要</label>
+                                {% elif p.level == 'L3' %}
+                                <label class="badge badge-info">重要不紧急</label>
+                                {% else %}
+                                <label class="badge badge-success">不重要不紧急</label>
+                                {% endif %}
+                            </td>
+                            <td>{{p.title}}</td>
+                            <td>
+                                <div class="form-check mt-0 mb-3">
+                                    <label class="form-check-label">
+                                        <input class="checkbox" type="checkbox" {% if p.isDone %}checked{% endif %}
+                                               objId="{{dp.weeklyPlan.monthlyPlan.yearlyPlan.id}}" objPlanType="yp"
+                                               objNumber="{{loop.index-1}}">
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <hr>
+                <p>
+                    <a class="btn btn-gradient-info btn-sm"
+                       href="{{ url_for('admin.timeManagementYearlyPlanEdit',id=dp.weeklyPlan.monthlyPlan.yearlyPlan.id) }}">修改任务</a>
+                    <a class="btn btn-sm btn-gradient-success"
+                       href="{{ url_for('admin.timeManagementWriteSummarize',planType='yp',id=dp.weeklyPlan.monthlyPlan.yearlyPlan.id) }}">年回顾</a>
+                </p>
+                <hr>
+                <p>
+                    {%if dp.weeklyPlan.monthlyPlan.yearlyPlan.summarize%}{{dp.weeklyPlan.monthlyPlan.yearlyPlan.summarize|safe}}{%endif%}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+{% block customJs %}
+<script src="{{url_for('static',filename='local/js/ajaxPost.js')}}"></script>
+<script>
+    $(document).ready(function () {
+        $(".checkbox").on('click', function () {
+            var id = $(this).attr('objId');
+            var planType = $(this).attr('objPlanType');
+            var number = $(this).attr('objNumber');
+            postDataToUrl({
+                'id': id,
+                'planType': planType,
+                'number': number
+            }, "{{url_for('admin.timeManagementPlanDone')}}");
+        });
+    });
+</script>
+{% endblock %}

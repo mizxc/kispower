@@ -1,0 +1,57 @@
+{% extends 'admin/_base.html' %}
+
+{% block title %}幻灯片设置-管理后台{% endblock %}
+
+{% block sidebar %}
+{% include "admin/_admin_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    {%for s in current_user.custom['slide']%}
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">幻灯片{{loop.index}}</h4>
+                <p class="card-description">
+                    {%if s[0]%}
+                        <img src="{{url_for('static',filename=s[0])}}" width="100%"><br>
+                    {%endif%}
+                </p>
+                <form class="forms-sample" action="{{ url_for('admin.uploadSlide',index=loop.index-1) }}" enctype="multipart/form-data" method="post">
+                    <div class="form-group">
+                        <label><i class="mdi mdi-multiplication text-danger"></i>请上传小于1M的jpg/png/gif图片</label>
+                        <input type="file" name="img" class="file-upload-default">
+                        <div class="input-group col-xs-12">
+                            <input type="text" class="form-control file-upload-info" disabled
+                                   placeholder="Upload Image">
+                            <span class="input-group-append">
+                            <button class="file-upload-browse btn btn-gradient-light" type="button">选择文件</button>
+                          </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>主标题</label>
+                        <input type="text" class="form-control" {%if s[1]%} value="{{s[1]}}" {%endif%} name="mainTitle">
+                    </div>
+                    <div class="form-group">
+                        <label>副标题</label>
+                        <input type="text" class="form-control" {%if s[2]%} value="{{s[2]}}" {%endif%} name="subTitle">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleTextarea1">点击链接网址（网址必须要包含http://部分）</label>
+                        <input type="text" class="form-control" {%if s[3]%} value="{{s[3]}}" {%endif%} name="link">
+                    </div>
+                    <button type="submit" class="btn btn-gradient-success mr-2">提交</button>
+                    <a class="btn btn-gradient-info mr-2" href="{{ url_for('admin.deleteSlide',index=loop.index-1) }}">删除</a>
+                </form>
+            </div>
+        </div>
+    </div>
+    {%endfor%}
+</div>
+{% endblock %}
+
+{% block customJs %}
+<script src="{{url_for('static',filename='extension/purpleAdmin/js/file-upload.js')}}"></script>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'theme/louie/_base.html' %}
+
+{% block title %}相册-{{custom['webName']}}{% endblock %}
+
+{% block content %}
+<section class="ftco-section ftco-bread">
+    <div class="container">
+        <div class="row no-gutters slider-text justify-content-center align-items-center">
+            <div class="col-md-8 ftco-animate fadeInUp ftco-animated">
+                <p class="breadcrumbs"><span class="mr-2"><a href="/">Home</a></span> <span>Photo</span>
+                </p>
+                <h1 class="bread">My Gallery</h1>
+                <p class="breadcrumbs mt-2">
+                {%for album in current_user.getPhotoAlbum()%}
+                <span class="mr-2"><a href="{{url_for('home.photo',albumId=album.id)}}">{{album.title}}</a></span>
+                {%endfor%}
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="ftco-section-3">
+    <div class="photograhy">
+        <div class="row">
+            {%for album in current_user.getPhotoAlbum()%}
+            {% set photo = current_user.getPhotoByAlbum(album.id)%}
+            {%if photo%}
+            <div class="col-md-4 ftco-animate fadeInUp ftco-animated">
+                <a href="{{url_for('home.photo',albumId=album.id)}}"
+                   class="photography-entry img d-flex justify-content-start align-items-end"
+                   style="background-image: url({{url_for('static',filename=photo.path)}});">
+                    <div class="overlay"></div>
+                    <div class="text ml-4 mb-4">
+                        <h3>{{album.title}}</h3>
+                    </div>
+                </a>
+            </div>
+            {%endif%}
+            {%endfor%}
+        </div>
+    </div>
+</section>
+{% endblock %}

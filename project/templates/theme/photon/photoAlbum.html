@@ -1,0 +1,32 @@
+{% extends 'theme/photon/_base.html' %}
+
+{% block title %}相册-{{custom['webName']}}{% endblock %}
+
+{% block content %}
+<div class="aos-init aos-animate" data-aos="fade">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="row site-section">
+                    <div class="col-12 ">
+                        <h2 class="site-section-heading text-center">My Gallery</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    {%for album in current_user.getPhotoAlbum()%}
+                    {% set photo = current_user.getPhotoByAlbum(album.id)%}
+                    {%if photo%}
+                    <div class="col-sm-6 col-md-4 col-lg-4 col-xl-4 p-3">
+                        <a href="{{url_for('home.photo',albumId=album.id)}}">
+                            <img src="{{url_for('static',filename=photo.path)}}" alt="IMage" class="figure-img img-fluid rounded">
+                            <figcaption class="figure-caption text-right">《{{album.title}}》</figcaption>
+                        </a>
+                    </div>
+                    {%endif%}
+                    {%endfor%}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

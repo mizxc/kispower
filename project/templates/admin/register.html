@@ -1,0 +1,40 @@
+{% extends 'admin/_base.html' %}
+{% block container %}
+<div class="container-fluid page-body-wrapper full-page-wrapper">
+    <div class="content-wrapper d-flex align-items-center auth">
+        <div class="row flex-grow">
+            <div class="col-lg-4 mx-auto">
+                <div class="auth-form-light text-left p-5">
+                    <div class="brand-logo">
+                        <img src="{{url_for('static',filename='extension/purpleAdmin/images/logo.svg')}}">
+                    </div>
+                    <h6 class="font-weight-light">注册：请输入用户名/邮箱/密码</h6>
+                    {% include "admin/_message.html" %}
+                    <form class="pt-3" action="{{ url_for('auth.userRegister') }}" method='post'>
+                        <div class="form-group">
+                            <input type="text" class="form-control form-control-lg" id="exampleInputUsername1"
+                                   placeholder="Username" name="userName">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-control form-control-lg" id="exampleInputEmail1"
+                                   placeholder="Email" name="email">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control form-control-lg" id="exampleInputPassword1"
+                                   placeholder="Password" name="password">
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-block btn-gradient-success btn-lg font-weight-medium auth-form-btn" type="submit">申请</button>
+                        </div>
+                        <div class="text-center mt-4 font-weight-light"> 已有账户? <a href="{{ url_for('auth.userLogin') }}"
+                                                                                                     class="text-primary">登陆</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- content-wrapper ends -->
+</div>
+{% endblock %}
+

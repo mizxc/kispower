@@ -1,0 +1,81 @@
+{% extends 'theme/lifeleck/_base.html' %}
+
+{% block title %}知识分享-{{custom['webName']}}{% endblock %}
+
+{% block customCss %}
+<style>
+    #section-backgroud {
+        background-image: url({{current_user.getRandomImage()}});
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="breadcrumb align-items-center" id="section-backgroud">
+    <div class="container">
+        <div class="row align-items-center justify-content-between">
+            <div class="col-sm-8">
+                <div class="breadcrumb_tittle text-left">
+                    <h2>我的知识分享
+                    </h2>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="breadcrumb_content text-right">
+                    <p>Home<span>/</span>Kshare</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="all_post section_padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="row">
+                    {%for k in ks%}
+                    <div class="col-lg-4 col-sm-4">
+                        <div class="single_post post_1 shadow">
+                            <div class="single_post_img">
+                                <a href="{{k.url}}"><img src="{{current_user.getRandomImage()}}" height="240px"></a>
+                            </div>
+                            <div class="single_post_text text-center">
+                                <a href="{{k.url}}" target="_blank" id="single-kshare-a">
+                                    <h2>{{k.title}}</h2>
+                                    <p>
+                                        {{k.shareTime}} |
+                                        by：<span class="text-danger">{{k.author}}</span>
+                                    </p>
+                                    <p>{{k.introduction|truncate(50, killwords=True, leeway=0)}}</p>
+                                    {%for t in k.tag%}
+                                    <a class="btn btn-sm btn-success" href="{{url_for('home.kshareBaseTag',tag=t)}}">{{t}}</a>
+                                    {%endfor%}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {%endfor%}
+                </div>
+                <div class="page_pageniation">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            {%if page>0%}
+                            <li class="page-item"><a class="page-link"
+                                                     href="{{url_for('home.kshare',page=page-1)}}">上一页</a></li>
+                            {%endif%}
+                            {%if ks.count()>(page+1)*11%}
+                            <li class="page-item"><a class="page-link"
+                                                     href="{{url_for('home.kshare',page=page+1)}}">下一页</a></li>
+                            {%endif%}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

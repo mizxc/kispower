@@ -1,0 +1,193 @@
+{% extends 'theme/default/_base.html' %}
+
+{% block title %}{{p.title}}-{{custom['webName']}}{% endblock %}
+
+{% block customCss %}
+<style>
+    .bradcam_area {
+        background-image: url('{{current_user.getRandomImage()}}');
+    }
+
+    .blog_details img {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="bradcam_area">
+    <h3>博客</h3>
+</div>
+
+<section class="blog_area single-post-area section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 posts-list">
+                <div class="single-post">
+                    <div class="blog_details">
+                        <span style="font-size: 28px;font-weight: bold;">{{p.title}}</span>
+                        <ul class="blog-info-link mt-3 mb-4">
+                            <li><i class="fa fa-user"></i>{{custom['userName']}}</li>
+                            <li class="d-none d-md-block d-lg-block d-xl-block"><i class="fa fa-circle"></i><a href="{{url_for('home.blogColumn',columnId=p.column.id)}}">
+                                {{p.column.title}}</a></li>
+                            <li class="d-none d-md-block d-lg-block d-xl-block"><i class="fa fa-tags"></i>
+                                {%for t in p.tags%}
+                                <a href="{{url_for('home.blogTag',tag=t)}}">{{t}}</a>
+                                {%endfor%}
+                            </li>
+                            <li><i class="fa fa-clock-o"></i>{{p.writeTime}}</li>
+                            <li class="d-none d-md-block d-lg-block d-xl-block"><i class="fa fa-eye"></i>{{p.pv}}</li>
+                        </ul>
+                        {%if p.video%}
+                            <div class="text-center">
+                                {{p.video|safe}}
+                            </div>
+                        {%endif%}
+                        {{p.content|safe}}
+                    </div>
+                </div>
+                <div class="navigation-top">
+                    <div class="navigation-area">
+                        <div class="row">
+                            {% set prevAndNextPost = current_user.getPrevAndNextPost(p.id) %}
+                            {%if prevAndNextPost[0]%}
+                            {% set prev = prevAndNextPost[0] %}
+                            <div class="col-lg-6 col-md-6 col-12 nav-left flex-row d-flex justify-content-start align-items-center">
+                                {%if prev.cover%}
+                                <div class="thumb">
+                                    <a href="{{url_for('home.blogShow',id=prev.id)}}">
+                                        <img class="img-fluid" src="{{prev.cover}}" width="100px">
+                                    </a>
+                                </div>
+                                {%endif%}
+                                <div class="arrow">
+                                    <a href="{{url_for('home.blogShow',id=prev.id)}}">
+                                        <span class="lnr text-white ti-arrow-left"></span>
+                                    </a>
+                                </div>
+                                <div class="detials">
+                                    <p>Prev Post</p>
+                                    <a href="{{url_for('home.blogShow',id=prev.id)}}">
+                                        <h4>{{prev.title}}</h4>
+                                    </a>
+                                </div>
+                            </div>
+                            {%endif%}
+                            {%if prevAndNextPost[1]%}
+                            {% set next = prevAndNextPost[1] %}
+                            <div class="col-lg-6 col-md-6 col-12 nav-right flex-row d-flex justify-content-end align-items-center">
+                                <div class="detials">
+                                    <p>Next Post</p>
+                                    <a href="{{url_for('home.blogShow',id=next.id)}}">
+                                        <h4>{{next.title}}</h4>
+                                    </a>
+                                </div>
+                                <div class="arrow">
+                                    <a href="{{url_for('home.blogShow',id=next.id)}}">
+                                        <span class="lnr text-white ti-arrow-right"></span>
+                                    </a>
+                                </div>
+                                {%if next.cover%}
+                                <div class="thumb">
+                                    <a href="{{url_for('home.blogShow',id=next.id)}}">
+                                        <img class="img-fluid" src="{{next.cover}}" width="100px">
+                                    </a>
+                                </div>
+                                {%endif%}
+                            </div>
+                            {%endif%}
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <!--PC和WAP自适应版-->
+                    <div id="SOHUCS" sid="post-{{p.id}}"></div>
+                    {%if custom['commentCode']%}
+                        {{custom['commentCode']|safe}}
+                    {%endif%}
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="blog_right_sidebar">
+                    <aside class="single_sidebar_widget search_widget">
+                        <form action="{{url_for('home.blogSearch')}}" method="post">
+                            <div class="form-group">
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Search Keyword"
+                                           name="search">
+                                    <div class="input-group-append">
+                                        <button class="btn" type="submit"><i class="ti-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="button rounded-0 primary-bg text-white w-100 btn_1 boxed-btn" type="submit">
+                                Search
+                            </button>
+                        </form>
+                    </aside>
+                    <aside class="single_sidebar_widget post_category_widget">
+                        <h4 class="widget_title">专栏</h4>
+                        <ul class="list cat-list">
+                            {%for item in current_user.getBlogColumn()%}
+                            <li>
+                                <a href="{{url_for('home.blogColumn',columnId=item.id)}}" class="d-flex">
+                                    <p>{{item.title}}</p>
+                                    <p>({{item.postCount}})</p>
+                                </a>
+                            </li>
+                            {%endfor%}
+                        </ul>
+                    </aside>
+                    <aside class="single_sidebar_widget tag_cloud_widget">
+                        <h4 class="widget_title">标签云</h4>
+                        <ul class="list">
+                            {%for t,count in custom['tags'].items()%}
+                            <li>
+                                <a href="{{url_for('home.blogTag',tag=t)}}">{{t}}({{count}})</a>
+                            </li>
+                            {%endfor%}
+                        </ul>
+                    </aside>
+                    <aside class="single_sidebar_widget popular_post_widget">
+                        <h3 class="widget_title">最新文章</h3>
+                        {%for p in current_user.getRecentPost()%}
+                        <div class="media post_item">
+                            {%if p.cover%}
+                            <img src="{{p.cover}}" alt="post" width="80">
+                            {%else%}
+                            <img src="{{current_user.getRandomImage()}}" alt="post" width="80">
+                            {%endif%}
+                            <div class="media-body">
+                                <a href="{{url_for('home.blogShow',id=p.id)}}">
+                                    <h3>{{p.title}}</h3>
+                                </a>
+                                <p>{{p.writeTime}}</p>
+                            </div>
+                        </div>
+                        {%endfor%}
+                    </aside>
+                    <aside class="single_sidebar_widget popular_post_widget">
+                        <h3 class="widget_title">热门文章</h3>
+                        {%for p in current_user.getHotPost()%}
+                        <div class="media post_item">
+                            {%if p.cover%}
+                            <img src="{{p.cover}}" alt="post" width="80">
+                            {%else%}
+                            <img src="{{current_user.getRandomImage()}}" alt="post" width="80">
+                            {%endif%}
+                            <div class="media-body">
+                                <a href="{{url_for('home.blogShow',id=p.id)}}">
+                                    <h3>{{p.title}}</h3>
+                                </a>
+                                <p>{{p.writeTime}}</p>
+                            </div>
+                        </div>
+                        {%endfor%}
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
