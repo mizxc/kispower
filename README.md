@@ -67,6 +67,7 @@ WEBSITE_KISPOWER = 'http://www.kispower.cn'
 解压:tar -zxvf nginx-1.17.8.tar.gz
 
 编译源码到/opt/kispower/nginx:
+
 ./configure --user=kispower --group=kispower --prefix=/opt/kispower/nginx --with-http_v2_module --with-http_ssl_module --with-http_sub_module --with-http_stub_status_module --with-http_gzip_static_module --with-http_flv_module --with-http_mp4_module --with-pcre
 make && make install
 
