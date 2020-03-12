@@ -69,6 +69,7 @@ WEBSITE_KISPOWER = 'http://www.kispower.cn'
 编译源码到/opt/kispower/nginx:
 
 ./configure --user=kispower --group=kispower --prefix=/opt/kispower/nginx --with-http_v2_module --with-http_ssl_module --with-http_sub_module --with-http_stub_status_module --with-http_gzip_static_module --with-http_flv_module --with-http_mp4_module --with-pcre
+
 make && make install
 
 上传kispower项目etc目录下的nginx.conf 到 /opt/kispower/etc下，把server_name改成自己的域名。
