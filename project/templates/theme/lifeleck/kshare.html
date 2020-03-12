@@ -50,9 +50,6 @@
                                         by：<span class="text-danger">{{k.author}}</span>
                                     </p>
                                     <p>{{k.introduction|truncate(50, killwords=True, leeway=0)}}</p>
-                                    {%for t in k.tag%}
-                                    <a class="btn btn-sm btn-success" href="{{url_for('home.kshareBaseTag',tag=t)}}">{{t}}</a>
-                                    {%endfor%}
                                 </a>
                             </div>
                         </div>

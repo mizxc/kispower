@@ -20,7 +20,7 @@ USER_CUSTOM = {
     'copyright':u'Copyright © 2020 <a href="http://www.kispower.cn">Kispower</a> All rights reserved 粤ICP备xxxxxx号',
     'statisticalCode':'',
     'commentCode':'',
-    'homeTemplate': 'theme/default',
+    'homeTemplate': 'theme/lifeleck',
     'slide':[
         ['local/images/slide1.jpg','kispower','个人知识管理系统','http://www.kispower.com'],
         ['local/images/slide2.jpg','kispower','最好用的知识管理系统','http://www.kispower.com'],

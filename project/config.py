@@ -15,7 +15,8 @@ class BaseConfig:
     """
     #_____________________________________________________________________
     VERSION = 'v2.5'
-    WEBSITE = '127.0.0.1'
+    WEBSITE = '127.0.0.1' #换成你自己的网址如：http://www.xxx.com
+
     WEBSITE_KISPOWER = 'http://www.kispower.cn'
     URL_FEEDBACK = '%s/private/feedbackAdd' % WEBSITE_KISPOWER
     URL_VERSION = '%s/private/redirectToVersion' % WEBSITE_KISPOWER #版本号目录
