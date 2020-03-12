@@ -72,7 +72,7 @@ make && make install
 
 上传kispower项目etc目录下的nginx.conf 到 /opt/kispower/etc下，把server_name改成自己的域名。
 
-## 4、安装python37
+### 4、安装python37
 安装工具包：
 
 yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel
