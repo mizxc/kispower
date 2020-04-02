@@ -26,7 +26,7 @@ class BaseConfig:
     URL_KSHARE_DELETE = '%s/private/knowledgeBaseDeleteKShare' % WEBSITE_KISPOWER #从共享知识库删除
     # _____________________________________________________________________
 
-    SECRET_KEY = 'LSKDJFIWEL3O49234-LSKDJFI2KDF-SLKFJ2204'  # session加密
+    SECRET_KEY = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'  # session加密
     PERMANENT_SESSION_LIFETIME = timedelta(days=30)  # 设置session过期时间
 
     # mongodb
